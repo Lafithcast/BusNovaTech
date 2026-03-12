@@ -1,0 +1,7 @@
+{
+  "nombreTerminal":"BusNovaTech",
+  "cantidadBuses":3,
+  "usuarios":[
+    {"u":"Fidelitas","p":"123"}
+  ]
+}
