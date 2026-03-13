@@ -1,4 +1,11 @@
-////Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas
+/**
+ * Clase encargada de centralizar el acceso a los repositorios
+ * de persistencia del sistema.
+ * <p>
+ * Facilita la interacción con la configuración y los tickets
+ * almacenados en archivos JSON.
+ * </p>
+ */
 package com.mycompany.proyectoavance1;
 public class Persistence {
 

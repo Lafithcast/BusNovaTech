@@ -1,4 +1,11 @@
-//Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas
+/**
+ * Clase utilitaria para capturar datos mediante cuadros de diálogo.
+ * <p>
+ * Proporciona métodos para leer textos, números enteros y opciones
+ * válidas, aplicando validaciones básicas para evitar entradas vacías
+ * o incorrectas.
+ * </p>
+ */
 package com.mycompany.proyectoavance1;
 public class InputJOP {
 

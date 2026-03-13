@@ -1,0 +1,5 @@
+{
+  "tickets":[
+    {"nombre":"Juan","id":12,"edad":20,"moneda":"COLONES","horaCompra":"12/03/2026 18:32:56","horaAbordaje":"NA","servicio":"VIP","tipoBus":"P"}
+  ]
+}

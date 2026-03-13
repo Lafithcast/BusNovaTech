@@ -1,4 +1,11 @@
-//Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas
+/**
+ * Repositorio encargado de la administración de tickets
+ * almacenados en un archivo JSON.
+ * <p>
+ * Permite cargar, guardar, agregar y actualizar tickets
+ * dentro del archivo de persistencia del sistema.
+ * </p>
+ */
 package com.mycompany.proyectoavance1;
 public class TicketRepository {
 

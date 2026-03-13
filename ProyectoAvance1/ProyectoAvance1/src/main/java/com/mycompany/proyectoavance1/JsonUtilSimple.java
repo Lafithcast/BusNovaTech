@@ -1,4 +1,12 @@
-//Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas
+/**
+ * Clase utilitaria para trabajar con archivos y cadenas JSON
+ * de manera sencilla, sin utilizar librerías externas.
+ * <p>
+ * Incluye métodos para leer y escribir archivos de texto,
+ * escapar caracteres especiales y extraer valores básicos
+ * desde una cadena en formato JSON.
+ * </p>
+ */
 package com.mycompany.proyectoavance1;
 import java.io.BufferedReader;
 import java.io.FileReader;

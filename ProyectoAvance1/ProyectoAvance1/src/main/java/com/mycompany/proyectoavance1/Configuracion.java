@@ -1,4 +1,18 @@
-//Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas
+/**
+ * Representa la configuración general del sistema.
+ * <p>
+ * Esta clase almacena datos principales de la terminal,
+ * como su nombre, la cantidad total de buses y la lista
+ * de usuarios con sus respectivas contraseñas.
+ * </p>
+ * <p>
+ * También incluye métodos para validar configuraciones,
+ * registrar usuarios, autenticar accesos y convertir
+ * la información a formato JSON.
+ * </p>
+ */
+
+
 package com.mycompany.proyectoavance1;
 public class Configuracion {
 
@@ -16,7 +30,7 @@ public class Configuracion {
         contras = new String[10];
         cantUsuarios = 0;
     }
-
+    // Verifica si la configuración actual contiene los datos mínimos válidos.
     public boolean tieneConfigValida() {
         if (nombreTerminal == null) return false;
         if (nombreTerminal.trim().equals("")) return false;
