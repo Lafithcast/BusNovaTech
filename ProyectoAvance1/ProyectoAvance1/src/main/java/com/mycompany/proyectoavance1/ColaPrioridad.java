@@ -1,4 +1,13 @@
-//Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas/
+/**
+ * Estructura encargada de administrar tickets en colas
+ * según su prioridad o tipo de bus.
+ * <p>
+ * El sistema utiliza tres colas:
+ * preferencial, directo y normal.
+ * Al momento de atender, siempre se da prioridad
+ * primero a preferencial, luego directo y finalmente normal.
+ * </p>
+ */
 package com.mycompany.proyectoavance1;
 public class ColaPrioridad {
 

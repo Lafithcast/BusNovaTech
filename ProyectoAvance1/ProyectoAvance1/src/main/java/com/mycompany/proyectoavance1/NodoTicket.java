@@ -1,4 +1,10 @@
-////Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas
+/**
+ * Representa un nodo dentro de una estructura enlazada de tickets.
+ * <p>
+ * Cada nodo almacena un objeto {@link Ticket} y una referencia
+ * al siguiente nodo de la secuencia.
+ * </p>
+ */
 package com.mycompany.proyectoavance1;
 
 public class NodoTicket {

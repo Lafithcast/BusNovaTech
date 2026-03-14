@@ -1,6 +1,21 @@
-//Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas
+/**
+ * Representa un ticket o tiquete generado por el sistema
+ * para un pasajero de la terminal.
+ * <p>
+ * Contiene información personal del cliente, datos del servicio,
+ * tipo de bus, moneda y tiempos de compra y abordaje.
+ * </p>
+ */
 package com.mycompany.proyectoavance1;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Ticket {
+    
+    public static String obtenerFecha() {
+    return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+}
 
     private String nombre;
     private int id;
@@ -14,7 +29,17 @@ public class Ticket {
     public Ticket() {
         horaAbordaje = "NA";
     }
-
+        /**
+     * Crea un nuevo ticket con la información básica del cliente.
+     *
+     * @param nombre nombre del cliente.
+     * @param id identificación del cliente.
+     * @param edad edad del cliente.
+     * @param moneda moneda de pago.
+     * @param servicio tipo de servicio solicitado.
+     * @param tipo tipo de servicio asignado.
+     * @return nuevo objeto {@link Ticket}.
+     */
     public static Ticket crearNuevo(String nombre, int id, int edad, String moneda, String servicio, char tipo) {
         Ticket t = new Ticket();
         t.nombre = nombre;
@@ -23,13 +48,13 @@ public class Ticket {
         t.monedaCuenta = moneda;
         t.servicio = servicio;
         t.tipoBus = tipo;
-        t.horaCompra = "" + System.currentTimeMillis();
+        t.horaCompra = "" + obtenerFecha();;
         t.horaAbordaje = "NA";
         return t;
     }
 
     public void marcarAbordajeAhora() {
-        horaAbordaje = "" + System.currentTimeMillis();
+        horaAbordaje = "" + obtenerFecha();;;
     }
 
     public String resumen() {

@@ -1,4 +1,12 @@
-//Authors = Allison Alvarado, Lafith Castrillo, Fernanda Herrera & Nicolas Peñas
+/**
+ * Clase principal de lógica del sistema.
+ * <p>
+ * Se encarga de coordinar el flujo general de la aplicación:
+ * carga de configuración, autenticación de usuarios, manejo
+ * de tickets, colas de prioridad, menú principal y persistencia.
+ * </p>
+ */
+
 package com.mycompany.proyectoavance1;
 public class Proyecto {
 
@@ -108,8 +116,8 @@ public class Proyecto {
 
     private void crearTicket() {
         String nombre = in.leerTextoNoVacio("Crear Ticket\nNombre:");
-        int id = in.leerEnteroRango("Crear Ticket\nID (1..999999999):", 1, 999999999);
-        int edad = in.leerEnteroRango("Crear Ticket\nEdad (0..120):", 0, 120);
+        int id = in.leerEnteroRango("Crear Ticket\nID:", 1, 999999999);
+        int edad = in.leerEnteroRango("Crear Ticket\nEdad:", 0, 120);
 
         String monedaOp = in.leerOpcionTexto(
                 "Crear Ticket\nMoneda/Cuenta:\n1) COLONES\n2) DOLARES",
