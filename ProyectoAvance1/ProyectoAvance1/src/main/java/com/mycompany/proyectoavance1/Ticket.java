@@ -41,20 +41,20 @@ public class Ticket {
      * @return nuevo objeto {@link Ticket}.
      */
     public static Ticket crearNuevo(String nombre, int id, int edad, String moneda, String servicio, char tipo) {
-        Ticket t = new Ticket();
-        t.nombre = nombre;
-        t.id = id;
-        t.edad = edad;
-        t.monedaCuenta = moneda;
-        t.servicio = servicio;
-        t.tipoBus = tipo;
-        t.horaCompra = "" + obtenerFecha();;
-        t.horaAbordaje = "NA";
-        return t;
+        Ticket nuevoTicket = new Ticket();
+        nuevoTicket.nombre = nombre;
+        nuevoTicket.id = id;
+        nuevoTicket.edad = edad;
+        nuevoTicket.monedaCuenta = moneda;
+        nuevoTicket.servicio = servicio;
+        nuevoTicket.tipoBus = tipo;
+        nuevoTicket.horaCompra = "" + obtenerFecha();
+        nuevoTicket.horaAbordaje = "NA";
+        return nuevoTicket;
     }
 
     public void marcarAbordajeAhora() {
-        horaAbordaje = "" + obtenerFecha();;;
+        horaAbordaje = "" + obtenerFecha();
     }
 
     public String resumen() {
@@ -74,17 +74,17 @@ public class Ticket {
     public char getTipoBus() { return tipoBus; }
 
     public String toJSON() {
-        String j = "{";
-        j += "\"nombre\":\"" + JsonUtilSimple.escape(nombre) + "\",";
-        j += "\"id\":" + id + ",";
-        j += "\"edad\":" + edad + ",";
-        j += "\"moneda\":\"" + JsonUtilSimple.escape(monedaCuenta) + "\",";
-        j += "\"horaCompra\":\"" + JsonUtilSimple.escape(horaCompra) + "\",";
-        j += "\"horaAbordaje\":\"" + JsonUtilSimple.escape(horaAbordaje) + "\",";
-        j += "\"servicio\":\"" + JsonUtilSimple.escape(servicio) + "\",";
-        j += "\"tipoBus\":\"" + tipoBus + "\"";
-        j += "}";
-        return j;
+        String jsonTexto = "{";
+        jsonTexto += "\"nombre\":\"" + JsonUtilSimple.escape(nombre) + "\",";
+        jsonTexto += "\"id\":" + id + ",";
+        jsonTexto += "\"edad\":" + edad + ",";
+        jsonTexto += "\"moneda\":\"" + JsonUtilSimple.escape(monedaCuenta) + "\",";
+        jsonTexto += "\"horaCompra\":\"" + JsonUtilSimple.escape(horaCompra) + "\",";
+        jsonTexto += "\"horaAbordaje\":\"" + JsonUtilSimple.escape(horaAbordaje) + "\",";
+        jsonTexto += "\"servicio\":\"" + JsonUtilSimple.escape(servicio) + "\",";
+        jsonTexto += "\"tipoBus\":\"" + tipoBus + "\"";
+        jsonTexto += "}";
+        return jsonTexto;
     }
 
     public static Ticket fromJSONBloque(String bloque) {
@@ -106,17 +106,17 @@ public class Ticket {
             if (moneda == null || horaCompra == null || horaAbordaje == null || servicio == null || tipo == null) return null;
             if (tipo.length() < 1) return null;
 
-            Ticket t = new Ticket();
-            t.nombre = nombre;
-            t.id = id;
-            t.edad = edad;
-            t.monedaCuenta = moneda;
-            t.horaCompra = horaCompra;
-            t.horaAbordaje = horaAbordaje;
-            t.servicio = servicio;
-            t.tipoBus = tipo.charAt(0);
+            Ticket ticketReconstruido = new Ticket();
+            ticketReconstruido.nombre = nombre;
+            ticketReconstruido.id = id;
+            ticketReconstruido.edad = edad;
+            ticketReconstruido.monedaCuenta = moneda;
+            ticketReconstruido.horaCompra = horaCompra;
+            ticketReconstruido.horaAbordaje = horaAbordaje;
+            ticketReconstruido.servicio = servicio;
+            ticketReconstruido.tipoBus = tipo.charAt(0);
 
-            return t;
+            return ticketReconstruido;
         } catch (Exception e) {
             return null;
         }
