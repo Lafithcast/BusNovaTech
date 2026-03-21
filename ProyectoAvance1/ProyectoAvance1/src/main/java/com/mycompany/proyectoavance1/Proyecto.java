@@ -1,10 +1,10 @@
 /**
  * Clase principal de lógica del sistema.
- * <p>
+ * <contrasena>
  * Se encarga de coordinar el flujo general de la aplicación:
  * carga de configuración, autenticación de usuarios, manejo
  * de tickets, colas de prioridad, menú principal y persistencia.
- * </p>
+ * </contrasena>
  */
 
 package com.mycompany.proyectoavance1;
@@ -12,12 +12,12 @@ public class Proyecto {
 
     private Configuracion config;
     private ColaPrioridad cola;
-    private InputJOP in;
+    private InputJOP entrada;
     private Persistence persistence;
 
     public Proyecto() {
         cola = new ColaPrioridad();
-        in = new InputJOP();
+        entrada = new InputJOP();
         persistence = new Persistence();
         config = null;
     }
@@ -51,8 +51,8 @@ public class Proyecto {
     }
 
     private void configurarDesdeCero() {
-        String nombreTerminal = in.leerTextoNoVacio("Nombre de la terminal:");
-        int totalBuses = in.leerEnteroRango("Cantidad total de buses :\nExcluyendo 1 normal y 1 preferencial.",
+        String nombreTerminal = entrada.leerTextoNoVacio("Nombre de la terminal:");
+        int totalBuses = entrada.leerEnteroRango("Cantidad total de buses :\nExcluyendo 1 normal y 1 preferencial.",
                 3, 200
         );
 
@@ -60,18 +60,18 @@ public class Proyecto {
         config.setCantidadBuses(totalBuses);
 
         javax.swing.JOptionPane.showMessageDialog(null, "Crea un usuario inicial");
-        String u = in.leerTextoNoVacio("Usuario:");
-        String p = in.leerTextoNoVacio("Contraseña:");
-        config.agregarUsuario(u, p);
+        String usuario = entrada.leerTextoNoVacio("Usuario:");
+        String contrasena = entrada.leerTextoNoVacio("Contraseña:");
+        config.agregarUsuario(usuario, contrasena);
     }
 
     private boolean login() {
         int intentos = 0;
         while (intentos < 3) {
-            String u = in.leerTextoNoVacio("LOGIN\nUsuario:");
-            String p = in.leerTextoNoVacio("LOGIN\nContraseña:");
+            String usuario = entrada.leerTextoNoVacio("LOGIN\nUsuario:");
+            String contrasena = entrada.leerTextoNoVacio("LOGIN\nContraseña:");
 
-            if (config.validarLogin(u, p)) {
+            if (config.validarLogin(usuario, contrasena)) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Bienvenido a " + config.getNombreTerminal());
                 return true;
             } else {
@@ -90,6 +90,8 @@ public class Proyecto {
                     "2) Llamar siguiente\n" +
                     "3) Ver estado de colas\n" +
                     "4) Agregar usuario\n" +
+                    "5) Agregar Buses\n" +
+                    "6) Eliminar Buses\n" +
                     "0) Salir\n\n" +
                     "Opcion:"
             );
@@ -99,12 +101,14 @@ public class Proyecto {
                 return;
             }
 
-            int op = in.parseEnteroSeguro(opStr, -1);
+            int op = entrada.parseEnteroSeguro(opStr, -1);
 
             if (op == 1) crearTicket();
             else if (op == 2) llamarSiguiente();
             else if (op == 3) verEstado();
             else if (op == 4) agregarUsuario();
+            else if (op == 5) agregarBuses();
+            else if (op == 6) eliminarBuses();
             else if (op == 0) {
                 salirGuardando();
                 return;
@@ -115,17 +119,17 @@ public class Proyecto {
     }
 
     private void crearTicket() {
-        String nombre = in.leerTextoNoVacio("Crear Ticket\nNombre:");
-        int id = in.leerEnteroRango("Crear Ticket\nID:", 1, 999999999);
-        int edad = in.leerEnteroRango("Crear Ticket\nEdad:", 0, 120);
+        String nombre = entrada.leerTextoNoVacio("Crear Ticket\nNombre:");
+        int id = entrada.leerEnteroRango("Crear Ticket\nID:", 1, 999999999);
+        int edad = entrada.leerEnteroRango("Crear Ticket\nEdad:", 0, 120);
 
-        String monedaOp = in.leerOpcionTexto(
+        String monedaOp = entrada.leerOpcionTexto(
                 "Crear Ticket\nMoneda/Cuenta:\n1) COLONES\n2) DOLARES",
                 "1", "2"
         );
         String moneda = monedaOp.equals("1") ? "COLONES" : "DOLARES";
 
-        String servicioOp = in.leerOpcionTexto(
+        String servicioOp = entrada.leerOpcionTexto(
                 "Crear Ticket\nServicio:\n1) VIP\n2) REGULAR\n3) CARGA\n4) EJECUTIVO\n5) NA",
                 "1","2","3","4","5"
         );
@@ -136,7 +140,7 @@ public class Proyecto {
         else if (servicioOp.equals("4")) servicio = "EJECUTIVO";
         else servicio = "NA";
 
-        String tipoOp = in.leerOpcionTexto(
+        String tipoOp = entrada.leerOpcionTexto(
                 "Crear Ticket\nTipo de Bus (solo 1 tipo):\n1) P Preferencial\n2) D Directo\n3) N Normal",
                 "1","2","3"
         );
@@ -153,6 +157,7 @@ public class Proyecto {
 
         javax.swing.JOptionPane.showMessageDialog(null, "Ticket creado:\n" + t.resumen());
     }
+    
 
     private void llamarSiguiente() {
         Ticket t = cola.desencolar();
@@ -181,20 +186,47 @@ public class Proyecto {
     }
 
     private void agregarUsuario() {
-        String u = in.leerTextoNoVacio("Agregar Usuario\nUsuario:");
-        if (config.existeUsuario(u)) {
+        String usuario = entrada.leerTextoNoVacio("Agregar Usuario\nUsuario:");
+        if (config.existeUsuario(usuario)) {
             javax.swing.JOptionPane.showMessageDialog(null, "Ese usuario ya existe.");
             return;
         }
-        String p = in.leerTextoNoVacio("Agregar Usuario\nContraseña:");
-        config.agregarUsuario(u, p);
+        String contrasena = entrada.leerTextoNoVacio("Agregar Usuario\nContraseña:");
+        config.agregarUsuario(usuario, contrasena);
 
         //guardar config.json
         persistence.getConfigRepository().guardar(config);
 
         javax.swing.JOptionPane.showMessageDialog(null, "Usuario agregado y guardado en config.json.");
     }
-
+    
+    
+    private void agregarBuses(){
+        int cantidadActual = config.getCantidadBuses();
+        int busesNuevos = entrada.leerEnteroRango(
+        "Buses actuales: " + cantidadActual + "\n cuantos desea agregar?", 1, 100 );
+        config.setCantidadBuses(cantidadActual + busesNuevos);
+        persistence.getConfigRepository().guardar(config);
+        javax.swing.JOptionPane.showMessageDialog(null, 
+        "Se agregaron " + busesNuevos + " buses. Total actual: " + config.getCantidadBuses());
+    }
+    
+    private void eliminarBuses(){
+        int cantidadActual = config.getCantidadBuses();
+        if(cantidadActual <= 3){
+            javax.swing.JOptionPane.showMessageDialog(null,
+            "Ya no se puede reducir mas la cantidad");
+            return;
+        }
+        int maximoEliminar = cantidadActual - 3;
+        int busesEliminar = entrada.leerEnteroRango("Buses actuales: " + cantidadActual + "\nCuantos desea eliminar? (max " + maximoEliminar + ")",
+        1, maximoEliminar);
+        config.setCantidadBuses(cantidadActual - busesEliminar);
+        persistence.getConfigRepository().guardar(config);
+        javax.swing.JOptionPane.showMessageDialog(null, 
+        "Se eliminaron " + busesEliminar + " buses. Total actual: " + config.getCantidadBuses());
+    }
+    
     private void salirGuardando() {
         persistence.getConfigRepository().guardar(config);
         persistence.getTicketRepository().guardarListaCompleta();
