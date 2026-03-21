@@ -1,6 +1,6 @@
 /**
  * Estructura encargada de administrar tickets en colas
- * según su prioridad o tipoBusTicket de bus.
+ * según su prioridad o tipo de bus.
  * <p>
  * El sistema utiliza tres colas:
  * preferencial, directo y normal.
@@ -11,125 +11,117 @@
 package com.mycompany.proyectoavance1;
 public class ColaPrioridad {
 
-    private NodoTicket cabezaPreferencial, colaPreferencial;
-    private NodoTicket cabezaDirecto, colaDirecto;
-    private NodoTicket cabezaNormal, colaNormal;
-    private int tamanoColaPreferencial, tamanoColaDirecto, tamanoColaNormal;
+    private NodoTicket headP, tailP;
+    private NodoTicket headD, tailD;
+    private NodoTicket headN, tailN;
+
+    private int sizeP, sizeD, sizeN;
 
     public ColaPrioridad() {
-        tamanoColaPreferencial = 0; tamanoColaDirecto = 0; tamanoColaNormal = 0;
+        sizeP = 0; sizeD = 0; sizeN = 0;
     }
 
-    public void encolar(Ticket ticket) {
-        if (ticket == null){
+    public void encolar(Ticket t) {
+        if (t == null) 
             return;
-        }
-        char tipoBusTicket = ticket.getTipoBus();
-        if (tipoBusTicket == 'P'){
-            encolarPreferencial(ticket); 
-        }else if (tipoBusTicket == 'D') {
-            encolarDirecto(ticket);
-        }else{
-            encolarNormal(ticket);
-        }
-        
+            char tipo = t.getTipoBus();
+        if (tipo == 'P')
+            encolarP(t);
+        else if (tipo == 'D') 
+            encolarD(t);
+        else encolarN(t);
     }
 
     public Ticket desencolar() {
-        if (cabezaPreferencial != null) 
+        if (headP != null) 
             return desencolarP();
-        if (cabezaDirecto != null) 
+        if (headD != null) 
             return desencolarD();
-        if (cabezaNormal != null) 
+        if (headN != null) 
             return desencolarN();
         return null;
     }
 
-    public int tamanoPreferencial() { return tamanoColaPreferencial; }
-    public int tamanoDirecto() { return tamanoColaDirecto; }
-    public int tamanoNormal() { return tamanoColaNormal; }
+    public int tamanoPreferencial() { return sizeP; }
+    public int tamanoDirecto() { return sizeD; }
+    public int tamanoNormal() { return sizeN; }
 
-    public String vistaPrevia(int cantidadMaxima) {
-        String string = "";
-        string += "Preferencial:\nuevoNodo" + obtenerTopCola(cabezaPreferencial, cantidadMaxima);
-        string += "Directo:\nuevoNodo" + obtenerTopCola(cabezaDirecto, cantidadMaxima);
-        string += "Normal:\nuevoNodo" + obtenerTopCola(cabezaNormal, cantidadMaxima);
-        return string;
+    public String vistaPrevia(int max) {
+        String s = "";
+        s += "P:\n" + top(headP, max);
+        s += "D:\n" + top(headD, max);
+        s += "N:\n" + top(headN, max);
+        return s;
     }
 
-    private String obtenerTopCola(NodoTicket cabeza, int cantidadMaxima) {
-        String resultado = "";
-        int contador = 0;
-        NodoTicket nodoActual = cabeza;
+    private String top(NodoTicket h, int max) {
+        String s = "";
+        int c = 0;
+        NodoTicket aux = h;
 
-        while (nodoActual != null && contador < cantidadMaxima) {
-            resultado += " - " + nodoActual.getValor().resumen() + "\nuevoNodo";
-            nodoActual = nodoActual.getSiguiente();
-            contador++;
+        while (aux != null && c < max) {
+            s += " - " + aux.getValor().resumen() + "\n";
+            aux = aux.getSiguiente();
+            c++;
         }
 
-        if (contador == 0){ 
-            resultado += " - (vacio)\nuevoNodo";
-        }
-            return resultado;
+        if (c == 0) s += " - (vacío)\n";
+            return s;
     }
 
-    private void encolarPreferencial(Ticket ticket) {
-        NodoTicket nuevoNodo = new NodoTicket(ticket);
-        if (cabezaPreferencial == null){
-            cabezaPreferencial = colaPreferencial = nuevoNodo; 
+    private void encolarP(Ticket t) {
+        NodoTicket n = new NodoTicket(t);
+        if (headP == null){
+            headP = tailP = n; 
         }else{ 
-            colaPreferencial.setSiguiente(nuevoNodo); colaPreferencial = nuevoNodo; }
-        tamanoColaPreferencial++;
+            tailP.setSiguiente(n); tailP = n; }
+        sizeP++;
     }
 
-    private void encolarDirecto(Ticket ticket) {
-        NodoTicket nuevoNodo = new NodoTicket(ticket);
-        if (cabezaDirecto == null) { 
-            cabezaDirecto = colaDirecto = nuevoNodo; 
+    private void encolarD(Ticket t) {
+        NodoTicket n = new NodoTicket(t);
+        if (headD == null) { 
+            headD = tailD = n; 
         }else{ 
-            colaDirecto.setSiguiente(nuevoNodo); colaDirecto = nuevoNodo; 
+            tailD.setSiguiente(n); tailD = n; 
             }
-        tamanoColaDirecto++;
+        sizeD++;
     }
 
-    private void encolarNormal(Ticket ticket) {
-        NodoTicket nuevoNodo = new NodoTicket(ticket);
-        if (cabezaNormal == null) {
-            cabezaNormal = colaNormal = nuevoNodo;
+    private void encolarN(Ticket t) {
+        NodoTicket n = new NodoTicket(t);
+        if (headN == null) {
+            headN = tailN = n;
         } else { 
-            colaNormal.setSiguiente(nuevoNodo); colaNormal = nuevoNodo;
+            tailN.setSiguiente(n); tailN = n;
         }
-        tamanoColaNormal++;
+        sizeN++;
     }
 
     private Ticket desencolarP() {
-        Ticket ticket = cabezaPreferencial.getValor();
-        cabezaPreferencial = cabezaPreferencial.getSiguiente();
-        if (cabezaPreferencial == null) {
-            colaPreferencial = null;
-        }
-        tamanoColaPreferencial--;
-        return ticket;
+        Ticket t = headP.getValor();
+        headP = headP.getSiguiente();
+        if (headP == null) 
+            tailP = null;
+            sizeP--;
+            return t;
     }
 
     private Ticket desencolarD() {
-        Ticket ticket = cabezaDirecto.getValor();
-        cabezaDirecto = cabezaDirecto.getSiguiente();
-        if (cabezaDirecto == null){
-            colaDirecto = null;
-        }
-        tamanoColaDirecto--;
-        return ticket;
+        Ticket t = headD.getValor();
+        headD = headD.getSiguiente();
+        if (headD == null) 
+            tailD = null;
+        sizeD--;
+            return t;
     }
 
     private Ticket desencolarN() {
-        Ticket ticket = cabezaNormal.getValor();
-        cabezaNormal = cabezaNormal.getSiguiente();
-        if (cabezaNormal == null){
-            colaNormal = null;
-        }
-        tamanoColaNormal--;
-        return ticket;
+        Ticket t = headN.getValor();
+        headN = headN.getSiguiente();
+        if (headN == null) 
+            tailN = null;
+            sizeN--;
+            return t;
     }
 }

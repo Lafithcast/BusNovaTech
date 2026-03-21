@@ -11,8 +11,8 @@ public class NodoTicket {
     private Ticket valor;
     private NodoTicket siguiente;
 
-    public NodoTicket(Ticket ticket) {
-        valor = ticket;
+    public NodoTicket(Ticket v) {
+        valor = v;
         siguiente = null;
     }
 
@@ -22,7 +22,7 @@ public class NodoTicket {
     public NodoTicket getSiguiente() { 
         return siguiente;
     }
-    public void setSiguiente(NodoTicket nodoSiguiente) {
-        siguiente = nodoSiguiente;
+    public void setSiguiente(NodoTicket s) {
+        siguiente = s;
     }
 }

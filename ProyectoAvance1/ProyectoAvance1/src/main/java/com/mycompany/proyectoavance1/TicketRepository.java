@@ -7,6 +7,8 @@
  * </p>
  */
 package com.mycompany.proyectoavance1;
+import com.google.gson.Gson;
+import java.util.Arrays;
 public class TicketRepository {
 
     private String ruta;
@@ -19,43 +21,23 @@ public class TicketRepository {
         cant = 0;
 
         Ticket[] cargados = cargarTickets();
-        int indice = 0;
-        while (indice < cargados.length) {
-            if (cargados[indice] != null) agregarEnCache(cargados[indice]);
-            indice++;
+        int i = 0;
+        while (i < cargados.length) {
+            if (cargados[i] != null) agregarEnCache(cargados[i]);
+            i++;
         }
     }
 
     public Ticket[] cargarTickets() {
         String json = JsonUtilSimple.leerArchivo(ruta);
-        if (json == null) return new Ticket[0];
-
-        Ticket[] ticketTemporales = new Ticket[500];
-        int indiceActual = 0;
-
-        int posicionBusqueda = 0;
-        while (true) {
-            int inicioObjeto = json.indexOf("{\"nombre\"", posicionBusqueda);
-            if (inicioObjeto < 0) break;
-
-            int finObjeto = json.indexOf("}", inicioObjeto);
-            if (finObjeto < 0) break;
-
-            String bloqueJson = json.substring(inicioObjeto, finObjeto + 1);
-            Ticket t = Ticket.fromJSONBloque(bloqueJson);
-            if (t != null) {
-                if (indiceActual < ticketTemporales.length) {
-                    ticketTemporales[indiceActual] = t;
-                    indiceActual++;
-                }
-            }
-            posicionBusqueda = finObjeto + 1;
+        if (json == null || json.trim().isEmpty()) return new Ticket[0];
+        try {
+            Gson gson = new Gson();
+            TicketsWrapper tw = gson.fromJson(json, TicketsWrapper.class);
+            return tw != null && tw.tickets != null ? tw.tickets : new Ticket[0];
+        } catch (Exception e) {
+            return new Ticket[0];
         }
-
-        Ticket[] ticketRecuperados = new Ticket[indiceActual];
-        int indice = 0;
-        while (indice < indiceActual) { ticketRecuperados[indice] = ticketTemporales[indice]; indice++; }
-        return ticketRecuperados;
     }
 
     public void agregarTicket(Ticket t) {
@@ -67,17 +49,17 @@ public class TicketRepository {
     public void actualizarTicket(Ticket actualizado) {
         if (actualizado == null) return;
 
-        int indice = 0;
-        while (indice < cant) {
-            Ticket t = cache[indice];
+        int i = 0;
+        while (i < cant) {
+            Ticket t = cache[i];
             if (t != null) {
                 if (t.getId() == actualizado.getId() && mismoTexto(t.getHoraCompra(), actualizado.getHoraCompra())) {
-                    cache[indice] = actualizado;
+                    cache[i] = actualizado;
                     guardarListaCompleta();
                     return;
                 }
             }
-            indice++;
+            i++;
         }
 
         agregarEnCache(actualizado);
@@ -85,18 +67,11 @@ public class TicketRepository {
     }
 
     public boolean guardarListaCompleta() {
-        String jsonTexto = "{\n  \"tickets\":[\n";
-        int indice = 0;
-        while (indice < cant) {
-            if (cache[indice] != null) {
-                jsonTexto += "    " + cache[indice].toJSON();
-                if (indice < cant - 1) jsonTexto += ",";
-                jsonTexto += "\n";
-            }
-            indice++;
-        }
-        jsonTexto += "  ]\n}\n";
-        return JsonUtilSimple.escribirArchivo(ruta, jsonTexto);
+        Gson gson = new Gson();
+        TicketsWrapper tw = new TicketsWrapper();
+        tw.tickets = Arrays.copyOf(cache, cant);
+        String json = gson.toJson(tw);
+        return JsonUtilSimple.escribirArchivo(ruta, json);
     }
 
     private void agregarEnCache(Ticket t) {
@@ -106,13 +81,13 @@ public class TicketRepository {
     }
 
     private void crecer() {
-        Ticket[] nuevoCache = new Ticket[cache.length + 200];
-        int indice = 0;
-        while (indice < cache.length) {
-            nuevoCache[indice] = cache[indice];
-            indice++;
+        Ticket[] n = new Ticket[cache.length + 200];
+        int i = 0;
+        while (i < cache.length) {
+            n[i] = cache[i];
+            i++;
         }
-        cache = nuevoCache;
+        cache = n;
     }
 
     private boolean mismoTexto(String a, String b) {
@@ -120,4 +95,8 @@ public class TicketRepository {
         if (a == null) return false;
         return a.equals(b);
     }
+}
+
+class TicketsWrapper {
+    public Ticket[] tickets;
 }

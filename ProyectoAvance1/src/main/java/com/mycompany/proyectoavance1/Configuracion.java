@@ -1,0 +1,121 @@
+/**
+ * Representa la configuración general del sistema.
+ * <p>
+ * Esta clase almacena datos principales de la terminal,
+ * como su nombre, la cantidad total de buses y la lista
+ * de usuarios con sus respectivas contraseñas.
+ * </p>
+ * <p>
+ * También incluye métodos para validar configuraciones,
+ * registrar usuarios, autenticar accesos y convertir
+ * la información a formato JSON.
+ * </p>
+ */
+
+
+package com.mycompany.proyectoavance1;
+import com.google.gson.Gson;
+public class Configuracion {
+
+    public String nombreTerminal;
+    public int cantidadBuses;
+
+    public String[] usuarios;
+    public String[] contras;
+    public int cantUsuarios;
+
+    public Configuracion() {
+        nombreTerminal = "";
+        cantidadBuses = 0;
+        usuarios = new String[10];
+        contras = new String[10];
+        cantUsuarios = 0;
+    }
+    // Verifica si la configuración actual contiene los datos mínimos válidos.
+    public boolean tieneConfigValida() {
+        if (nombreTerminal == null) return false;
+        if (nombreTerminal.trim().equals("")) return false;
+        if (cantidadBuses < 3) return false;
+        if (cantUsuarios <= 0) return false;
+        return true;
+    }
+
+    public String getNombreTerminal() { return nombreTerminal; }
+    public int getCantidadBuses() { return cantidadBuses; }
+
+    public void setNombreTerminal(String n) { nombreTerminal = n; }
+    public void setCantidadBuses(int c) { cantidadBuses = c; }
+
+    public boolean existeUsuario(String u) {
+        int i = 0;
+        while (i < cantUsuarios) {
+            if (usuarios[i] != null && usuarios[i].equals(u)) return true;
+            i++;
+        }
+        return false;
+    }
+
+    public void agregarUsuario(String Usuario, String Password) {
+        if (Usuario == null || Password == null) return;
+        Usuario = Usuario.trim();
+        Password = Password.trim();
+        if (Usuario.equals("") || Password.equals("")) return;
+        if (existeUsuario(Usuario)) return;
+
+        if (cantUsuarios >= usuarios.length) crecerUsuarios();
+
+        usuarios[cantUsuarios] = Usuario;
+        contras[cantUsuarios] = Password;
+        cantUsuarios++;
+    }
+
+    private void crecerUsuarios() {
+        String[] nu = new String[usuarios.length + 10];
+        String[] np = new String[contras.length + 10];
+
+        int i = 0;
+        while (i < usuarios.length) {
+            nu[i] = usuarios[i];
+            np[i] = contras[i];
+            i++;
+        }
+        usuarios = nu;
+        contras = np;
+    }
+
+    public boolean validarLogin(String u, String p) {
+        int i = 0;
+        while (i < cantUsuarios) {
+            if (usuarios[i] != null && usuarios[i].equals(u)) {
+                if (contras[i] != null && contras[i].equals(p)) return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
+    public String toJSON() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
+
+    public static class ConfigSerializable {
+        public String nombreTerminal;
+        public int cantidadBuses;
+        public String[] usuarios;
+        public String[] contras;
+    }
+
+    public static Configuracion fromJSON(String json) {
+        try {
+            if (json == null) return null;
+            Gson gson = new Gson();
+            Configuracion c = gson.fromJson(json, Configuracion.class);
+            if (c == null) return null;
+            if (!c.tieneConfigValida()) return null;
+            return c;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+}
