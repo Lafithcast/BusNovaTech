@@ -52,21 +52,21 @@ public class Ticket {
      */
     public static Ticket crearNuevo(String nombre, int id, int edad, String moneda, String servicio, char tipo) {
         Ticket t = new Ticket();
-        t.nombre = nombre;
-        t.id = id;
-        t.edad = edad;
-        t.monedaCuenta = moneda;
-        t.servicio = servicio;
-        t.tipoBus = tipo;
-        t.horaCompra = "" + obtenerFecha();
-        t.horaAbordaje = "NA";
-        t.estado = "Pendiente";
-        t.librasCarga = 0; // Se setea después si es CARGA
+        ticket.nombre = nombre;
+        ticket.id = id;
+        ticket.edad = edad;
+        ticket.monedaCuenta = moneda;
+        ticket.servicio = servicio;
+        ticket.tipoBus = tipo;
+        ticket.horaCompra = "" + obtenerFecha();
+        ticket.horaAbordaje = "NA";
+        ticket.estado = "Pendiente";
+        ticket.librasCarga = 0; 
         return t;
     }
 
     public void marcarAbordajeAhora() {
-        horaAbordaje = "" + obtenerFecha();;;
+        horaAbordaje = "" + obtenerFecha();
     }
 
     public String resumen() {
@@ -88,13 +88,11 @@ public class Ticket {
     public String getHoraCompra() { return horaCompra; }
     public String getHoraAbordaje() { return horaAbordaje; }
     public char getTipoBus() { return tipoBus; }
-    // Nuevos getters
     public String getEstado() { return estado; }
     public String getTerminalCompra() { return terminalCompra; }
     public int getBusAsignado() { return busAsignado; }
     public int getLibrasCarga() { return librasCarga; }
-    // Nuevos setters
-    public void setEstado(String e) { estado = e; }
+    public void setEstado(String estado) { estado = estado; }
     public void setTerminalCompra(String t) { terminalCompra = t; }
     public void setBusAsignado(int b) { busAsignado = b; }
     public void setLibrasCarga(int l) { librasCarga = l; }
