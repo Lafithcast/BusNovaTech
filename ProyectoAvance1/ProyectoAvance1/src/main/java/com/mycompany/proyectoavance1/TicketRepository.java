@@ -7,6 +7,8 @@
  * </p>
  */
 package com.mycompany.proyectoavance1;
+import com.google.gson.Gson;
+import java.util.Arrays;
 public class TicketRepository {
 
     private String ruta;
@@ -28,34 +30,14 @@ public class TicketRepository {
 
     public Ticket[] cargarTickets() {
         String json = JsonUtilSimple.leerArchivo(ruta);
-        if (json == null) return new Ticket[0];
-
-        Ticket[] temp = new Ticket[500];
-        int idx = 0;
-
-        int pos = 0;
-        while (true) {
-            int obj = json.indexOf("{\"nombre\"", pos);
-            if (obj < 0) break;
-
-            int fin = json.indexOf("}", obj);
-            if (fin < 0) break;
-
-            String bloque = json.substring(obj, fin + 1);
-            Ticket t = Ticket.fromJSONBloque(bloque);
-            if (t != null) {
-                if (idx < temp.length) {
-                    temp[idx] = t;
-                    idx++;
-                }
-            }
-            pos = fin + 1;
+        if (json == null || json.trim().isEmpty()) return new Ticket[0];
+        try {
+            Gson gson = new Gson();
+            TicketsWrapper tw = gson.fromJson(json, TicketsWrapper.class);
+            return tw != null && tw.tickets != null ? tw.tickets : new Ticket[0];
+        } catch (Exception e) {
+            return new Ticket[0];
         }
-
-        Ticket[] rec = new Ticket[idx];
-        int i = 0;
-        while (i < idx) { rec[i] = temp[i]; i++; }
-        return rec;
     }
 
     public void agregarTicket(Ticket t) {
@@ -85,18 +67,11 @@ public class TicketRepository {
     }
 
     public boolean guardarListaCompleta() {
-        String j = "{\n  \"tickets\":[\n";
-        int i = 0;
-        while (i < cant) {
-            if (cache[i] != null) {
-                j += "    " + cache[i].toJSON();
-                if (i < cant - 1) j += ",";
-                j += "\n";
-            }
-            i++;
-        }
-        j += "  ]\n}\n";
-        return JsonUtilSimple.escribirArchivo(ruta, j);
+        Gson gson = new Gson();
+        TicketsWrapper tw = new TicketsWrapper();
+        tw.tickets = Arrays.copyOf(cache, cant);
+        String json = gson.toJson(tw);
+        return JsonUtilSimple.escribirArchivo(ruta, json);
     }
 
     private void agregarEnCache(Ticket t) {
@@ -120,4 +95,8 @@ public class TicketRepository {
         if (a == null) return false;
         return a.equals(b);
     }
+}
+
+class TicketsWrapper {
+    public Ticket[] tickets;
 }

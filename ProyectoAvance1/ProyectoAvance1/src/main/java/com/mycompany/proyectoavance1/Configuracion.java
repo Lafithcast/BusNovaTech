@@ -14,14 +14,15 @@
 
 
 package com.mycompany.proyectoavance1;
+import com.google.gson.Gson;
 public class Configuracion {
 
-    private String nombreTerminal;
-    private int cantidadBuses;
+    public String nombreTerminal;
+    public int cantidadBuses;
 
-    private String[] usuarios;
-    private String[] contras;
-    private int cantUsuarios;
+    public String[] usuarios;
+    public String[] contras;
+    public int cantUsuarios;
 
     public Configuracion() {
         nombreTerminal = "";
@@ -94,59 +95,23 @@ public class Configuracion {
     }
 
     public String toJSON() {
-        String j = "{\n";
-        j += "  \"nombreTerminal\":\"" + JsonUtilSimple.escape(nombreTerminal) + "\",\n";
-        j += "  \"cantidadBuses\":" + cantidadBuses + ",\n";
-        j += "  \"usuarios\":[\n";
+        Gson gson = new Gson();
+        return gson.toJson(this);
+    }
 
-        int i = 0;
-        while (i < cantUsuarios) {
-            String u = usuarios[i];
-            String p = contras[i];
-
-            j += "    {\"u\":\"" + JsonUtilSimple.escape(u) + "\",\"p\":\"" + JsonUtilSimple.escape(p) + "\"}";
-            if (i < cantUsuarios - 1) j += ",";
-            j += "\n";
-            i++;
-        }
-
-        j += "  ]\n";
-        j += "}\n";
-        return j;
+    public static class ConfigSerializable {
+        public String nombreTerminal;
+        public int cantidadBuses;
+        public String[] usuarios;
+        public String[] contras;
     }
 
     public static Configuracion fromJSON(String json) {
         try {
             if (json == null) return null;
-
-            Configuracion c = new Configuracion();
-            String nombre = JsonUtilSimple.extraerString(json, "nombreTerminal");
-            int buses = JsonUtilSimple.extraerInt(json, "cantidadBuses", -1);
-
-            if (nombre == null) return null;
-            if (buses < 3) return null;
-
-            c.setNombreTerminal(nombre);
-            c.setCantidadBuses(buses);
-
-            int pos = 0;
-            while (true) {
-                int obj = json.indexOf("{\"u\"", pos);
-                if (obj < 0) break;
-
-                int fin = json.indexOf("}", obj);
-                if (fin < 0) break;
-
-                String bloque = json.substring(obj, fin + 1);
-
-                String u = JsonUtilSimple.extraerString(bloque, "u");
-                String p = JsonUtilSimple.extraerString(bloque, "p");
-
-                if (u != null && p != null) c.agregarUsuario(u, p);
-
-                pos = fin + 1;
-            }
-
+            Gson gson = new Gson();
+            Configuracion c = gson.fromJson(json, Configuracion.class);
+            if (c == null) return null;
             if (!c.tieneConfigValida()) return null;
             return c;
         } catch (Exception e) {

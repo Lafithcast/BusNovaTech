@@ -10,6 +10,7 @@ package com.mycompany.proyectoavance1;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import com.google.gson.Gson;
 
 public class Ticket {
     
@@ -17,17 +18,26 @@ public class Ticket {
     return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 }
 
-    private String nombre;
-    private int id;
-    private int edad;
-    private String monedaCuenta;
-    private String horaCompra;
-    private String horaAbordaje;
-    private String servicio;
-    private char tipoBus;
+    public String nombre;
+    public int id;
+    public int edad;
+    public String monedaCuenta;
+    public String horaCompra;
+    public String horaAbordaje;
+    public String servicio; // Usado como tipoServicio
+    public char tipoBus;
+    // Nuevos campos
+    public String estado;
+    public String terminalCompra;
+    public int busAsignado;
+    public int librasCarga;
 
     public Ticket() {
         horaAbordaje = "NA";
+        estado = "Pendiente";
+        terminalCompra = "";
+        busAsignado = 0;
+        librasCarga = 0;
     }
         /**
      * Crea un nuevo ticket con la información básica del cliente.
@@ -48,8 +58,10 @@ public class Ticket {
         t.monedaCuenta = moneda;
         t.servicio = servicio;
         t.tipoBus = tipo;
-        t.horaCompra = "" + obtenerFecha();;
+        t.horaCompra = "" + obtenerFecha();
         t.horaAbordaje = "NA";
+        t.estado = "Pendiente";
+        t.librasCarga = 0; // Se setea después si es CARGA
         return t;
     }
 
@@ -63,60 +75,39 @@ public class Ticket {
                 " | Edad=" + edad +
                 " | Moneda=" + monedaCuenta +
                 " | Compra=" + horaCompra +
-                " | Abordaje=" + horaAbordaje +
+                " | Atencion=" + horaAbordaje +
                 " | Servicio=" + servicio +
-                " | TipoBus=" + tipoBus;
+                " | TipoBus=" + tipoBus +
+                " | Estado=" + estado +
+                " | Terminal=" + terminalCompra +
+                " | Bus=" + busAsignado +
+                " | Libras=" + librasCarga;
     }
 
     public int getId() { return id; }
     public String getHoraCompra() { return horaCompra; }
     public String getHoraAbordaje() { return horaAbordaje; }
     public char getTipoBus() { return tipoBus; }
+    // Nuevos getters
+    public String getEstado() { return estado; }
+    public String getTerminalCompra() { return terminalCompra; }
+    public int getBusAsignado() { return busAsignado; }
+    public int getLibrasCarga() { return librasCarga; }
+    // Nuevos setters
+    public void setEstado(String e) { estado = e; }
+    public void setTerminalCompra(String t) { terminalCompra = t; }
+    public void setBusAsignado(int b) { busAsignado = b; }
+    public void setLibrasCarga(int l) { librasCarga = l; }
 
     public String toJSON() {
-        String j = "{";
-        j += "\"nombre\":\"" + JsonUtilSimple.escape(nombre) + "\",";
-        j += "\"id\":" + id + ",";
-        j += "\"edad\":" + edad + ",";
-        j += "\"moneda\":\"" + JsonUtilSimple.escape(monedaCuenta) + "\",";
-        j += "\"horaCompra\":\"" + JsonUtilSimple.escape(horaCompra) + "\",";
-        j += "\"horaAbordaje\":\"" + JsonUtilSimple.escape(horaAbordaje) + "\",";
-        j += "\"servicio\":\"" + JsonUtilSimple.escape(servicio) + "\",";
-        j += "\"tipoBus\":\"" + tipoBus + "\"";
-        j += "}";
-        return j;
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
     public static Ticket fromJSONBloque(String bloque) {
         try {
-            if (bloque == null) return null;
-
-            String nombre = JsonUtilSimple.extraerString(bloque, "nombre");
-            int id = JsonUtilSimple.extraerInt(bloque, "id", -1);
-            int edad = JsonUtilSimple.extraerInt(bloque, "edad", -1);
-            String moneda = JsonUtilSimple.extraerString(bloque, "moneda");
-            String horaCompra = JsonUtilSimple.extraerString(bloque, "horaCompra");
-            String horaAbordaje = JsonUtilSimple.extraerString(bloque, "horaAbordaje");
-            String servicio = JsonUtilSimple.extraerString(bloque, "servicio");
-            String tipo = JsonUtilSimple.extraerString(bloque, "tipoBus");
-
-            if (nombre == null) return null;
-            if (id < 1) return null;
-            if (edad < 0) return null;
-            if (moneda == null || horaCompra == null || horaAbordaje == null || servicio == null || tipo == null) return null;
-            if (tipo.length() < 1) return null;
-
-            Ticket t = new Ticket();
-            t.nombre = nombre;
-            t.id = id;
-            t.edad = edad;
-            t.monedaCuenta = moneda;
-            t.horaCompra = horaCompra;
-            t.horaAbordaje = horaAbordaje;
-            t.servicio = servicio;
-            t.tipoBus = tipo.charAt(0);
-
-            return t;
+            Gson gson = new Gson();
+            return gson.fromJson(bloque, Ticket.class);
         } catch (Exception e) {
             return null;
         }

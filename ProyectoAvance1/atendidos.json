@@ -1,0 +1,5 @@
+{"id":0,"edad":0,"horaAbordaje":"NA","tipoBus":"\u0000","estado":"Pendiente","terminalCompra":"","busAsignado":0,"librasCarga":0}
+{"nombre":"Lafith","id":23,"edad":23,"monedaCuenta":"DOLARES","horaCompra":"21/03/2026 15:49:29","horaAbordaje":"21/03/2026 15:57:11","servicio":"REGULAR","tipoBus":"D","estado":"Atendido","terminalCompra":"Fidelitas123","busAsignado":2,"librasCarga":0}
+{"nombre":"Juan","id":12,"edad":23,"monedaCuenta":"COLONES","horaCompra":"21/03/2026 15:49:51","horaAbordaje":"21/03/2026 16:05:07","servicio":"REGULAR","tipoBus":"D","estado":"Atendido","terminalCompra":"Fidelitas123","busAsignado":2,"librasCarga":0}
+{"nombre":"Manuel","id":45,"edad":12,"monedaCuenta":"DOLARES","horaCompra":"21/03/2026 16:05:32","horaAbordaje":"21/03/2026 16:05:50","servicio":"VIP","tipoBus":"P","estado":"Atendido","terminalCompra":"Fidelitas123","busAsignado":1,"librasCarga":0}
+{"nombre":"Mario","id":56,"edad":85,"monedaCuenta":"COLONES","horaCompra":"21/03/2026 16:21:49","horaAbordaje":"21/03/2026 16:21:58","servicio":"REGULAR","tipoBus":"D","estado":"Atendido","terminalCompra":"Fidelitas123","busAsignado":2,"librasCarga":0}

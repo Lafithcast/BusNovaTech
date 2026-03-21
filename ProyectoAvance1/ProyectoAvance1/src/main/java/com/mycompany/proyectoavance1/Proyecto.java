@@ -14,12 +14,15 @@ public class Proyecto {
     private ColaPrioridad cola;
     private InputJOP in;
     private Persistence persistence;
+    // Nuevo
+    private Bus[] buses;
 
     public Proyecto() {
         cola = new ColaPrioridad();
         in = new InputJOP();
         persistence = new Persistence();
         config = null;
+        buses = null;
     }
 
     public void iniciar() {
@@ -33,6 +36,9 @@ public class Proyecto {
             configurarDesdeCero();
             persistence.getConfigRepository().guardar(config);
         }
+
+        // Inicializar buses
+        inicializarBuses();
 
         //tiquetes.json
         Ticket[] guardados = persistence.getTicketRepository().cargarTickets();
@@ -65,6 +71,15 @@ public class Proyecto {
         config.agregarUsuario(u, p);
     }
 
+    // Nuevo método
+    private void inicializarBuses() {
+        int cant = config.getCantidadBuses();
+        buses = new Bus[cant];
+        for (int i = 0; i < cant; i++) {
+            buses[i] = new Bus(i + 1);
+        }
+    }
+
     private boolean login() {
         int intentos = 0;
         while (intentos < 3) {
@@ -90,13 +105,14 @@ public class Proyecto {
                     "2) Llamar siguiente\n" +
                     "3) Ver estado de colas\n" +
                     "4) Agregar usuario\n" +
+                    "5) Abordar (atender siguiente en bus)\n" +
+                    "6) Ver tickets atendidos\n" +
                     "0) Salir\n\n" +
                     "Opcion:"
             );
 
             if (opStr == null) {
-                salirGuardando();
-                return;
+                continue;
             }
 
             int op = in.parseEnteroSeguro(opStr, -1);
@@ -105,6 +121,8 @@ public class Proyecto {
             else if (op == 2) llamarSiguiente();
             else if (op == 3) verEstado();
             else if (op == 4) agregarUsuario();
+            else if (op == 5) abordar();
+            else if (op == 6) verAtendidos();
             else if (op == 0) {
                 salirGuardando();
                 return;
@@ -136,6 +154,11 @@ public class Proyecto {
         else if (servicioOp.equals("4")) servicio = "EJECUTIVO";
         else servicio = "NA";
 
+        int libras = 0;
+        if (servicio.equals("CARGA")) {
+            libras = in.leerEnteroRango("Crear Ticket\nLibras de carga:", 0, 1000);
+        }
+
         String tipoOp = in.leerOpcionTexto(
                 "Crear Ticket\nTipo de Bus (solo 1 tipo):\n1) P Preferencial\n2) D Directo\n3) N Normal",
                 "1","2","3"
@@ -145,10 +168,23 @@ public class Proyecto {
         else if (tipoOp.equals("2")) tipo = 'D';
         else tipo = 'N';
 
-        Ticket t = Ticket.crearNuevo(nombre, id, edad, moneda, servicio, tipo);
-        cola.encolar(t);
+        // Asignar bus
+        int busId = in.leerEnteroRango("Crear Ticket\nAsignar a bus (1-" + buses.length + "):", 1, buses.length);
 
-        //guardar
+        Ticket t = Ticket.crearNuevo(nombre, id, edad, moneda, servicio, tipo);
+        t.setTerminalCompra(config.getNombreTerminal());
+        t.setBusAsignado(busId);
+        t.setLibrasCarga(libras);
+
+        Bus bus = buses[busId - 1];
+        bus.getCola().encolar(t);
+
+        // Si inspector libre, atender inmediatamente
+        if (!bus.getInspector().isOcupado()) {
+            atenderTicket(t, bus);
+        }
+
+        //guardar en tiquetes.json
         persistence.getTicketRepository().agregarTicket(t);
 
         javax.swing.JOptionPane.showMessageDialog(null, "Ticket creado:\n" + t.resumen());
@@ -195,9 +231,61 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null, "Usuario agregado y guardado en config.json.");
     }
 
+    // Nuevo método
+    private void abordar() {
+        int busId = in.leerEnteroRango("Abordar\nElegir bus (1-" + buses.length + "):", 1, buses.length);
+        Bus bus = buses[busId - 1];
+        Ticket t = bus.getCola().desencolar();
+        if (t == null) {
+            javax.swing.JOptionPane.showMessageDialog(null, "No hay tickets en la cola del bus " + busId);
+            return;
+        }
+        atenderTicket(t, bus);
+    }
+
+    // Nuevo método
+    private void atenderTicket(Ticket t, Bus bus) {
+        bus.getInspector().setOcupado(true);
+        int costo = calcularCosto(t);
+        String msg = "Atendiendo ticket:\n" + t.resumen() + "\nCosto: $" + costo + "\n¿Desea pagar? (si/no)";
+        String paga = in.leerOpcionTexto(msg, "si", "no");
+        if (paga.equals("si")) {
+            t.setEstado("Atendido");
+            t.marcarAbordajeAhora(); // horaAtencion
+            persistence.getAtendidosRepository().agregarTicket(t);
+            javax.swing.JOptionPane.showMessageDialog(null, "Ticket atendido y guardado en atendidos.json");
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(null, "Pago rechazado. Ticket removido de la cola.");
+        }
+        bus.getInspector().setOcupado(false);
+    }
+
+    // Nuevo método
+    private int calcularCosto(Ticket t) {
+        if (t.servicio.equals("VIP")) return 100;
+        if (t.servicio.equals("REGULAR")) return 20;
+        if (t.servicio.equals("CARGA")) return 20 + 10 * t.getLibrasCarga();
+        if (t.servicio.equals("EJECUTIVO")) return 1000;
+        return 0;
+    }
+
+    // Nuevo método
+    private void verAtendidos() {
+        Ticket[] atendidos = persistence.getAtendidosRepository().cargarTickets();
+        String msg = "=== Tickets Atendidos ===\n";
+        for (int i = 0; i < atendidos.length; i++) {
+            if (atendidos[i] != null) {
+                msg += atendidos[i].resumen() + "\n\n";
+            }
+        }
+        if (atendidos.length == 0) msg += "(Ninguno)\n";
+        javax.swing.JOptionPane.showMessageDialog(null, msg);
+    }
+
     private void salirGuardando() {
         persistence.getConfigRepository().guardar(config);
         persistence.getTicketRepository().guardarListaCompleta();
+        persistence.getAtendidosRepository().guardarListaCompleta();
         javax.swing.JOptionPane.showMessageDialog(null, "Guardado en JSON. Saliendo...");
     }
 }
