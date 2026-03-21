@@ -9,84 +9,84 @@
 package com.mycompany.proyectoavance1;
 public class InputJOP {
 
-    public String leerTextoNoVacio(String msg) {
+    public String leerTextoNoVacio(String mensaje) {
         while (true) {
-            String s = javax.swing.JOptionPane.showInputDialog(msg);
-            if (s == null) {
+            String textoIngresado = javax.swing.JOptionPane.showInputDialog(mensaje);
+            if (textoIngresado == null) {
                 javax.swing.JOptionPane.showMessageDialog(null, "intenta de nuevo.");
                 continue;
             }
-            s = s.trim();
-            if (!s.equals("")) return s;
+            textoIngresado = textoIngresado.trim();
+            if (!textoIngresado.equals("")) return textoIngresado;
                 javax.swing.JOptionPane.showMessageDialog(null, "Entrada invalida.");
         }
     }
 
-    public int leerEnteroRango(String msg, int min, int max) {
+    public int leerEnteroRango(String mensaje, int min, int max) {
         while (true) {
-            String s = javax.swing.JOptionPane.showInputDialog(msg);
-            if (s == null) {
+            String textoIngresado = javax.swing.JOptionPane.showInputDialog(mensaje);
+            if (textoIngresado == null) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Intenta de nuevo.");
                 continue;
             }
-            s = s.trim();
+            textoIngresado = textoIngresado.trim();
 
-            int n = parseEnteroSeguro(s, Integer.MIN_VALUE);
-            if (n == Integer.MIN_VALUE) {
+            int valorIngresado = parseEnteroSeguro(textoIngresado, Integer.MIN_VALUE);
+            if (valorIngresado == Integer.MIN_VALUE) {
                 javax.swing.JOptionPane.showMessageDialog(null, "numero invalido");
                 continue;
             }
 
-            if (n < min || n > max) {
+            if (valorIngresado < min || valorIngresado > max) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Fuera de rango (" + min + " a " + max + ").");
                 continue;
             }
-            return n;
+            return valorIngresado;
         }
     }
 
-    public String leerOpcionTexto(String msg, String op1, String op2) {
+    public String leerOpcionTexto(String mensaje, String op1, String op2) {
         while (true) {
-            String s = javax.swing.JOptionPane.showInputDialog(msg);
-            if (s == null) {
+            String textoIngresado = javax.swing.JOptionPane.showInputDialog(mensaje);
+            if (textoIngresado == null) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Intenta de nuevo.");
                 continue;
             }
-            s = s.trim();
-            if (s.equals(op1) || s.equals(op2)) return s;
+            textoIngresado = textoIngresado.trim();
+            if (textoIngresado.equals(op1) || textoIngresado.equals(op2)) return textoIngresado;
                 javax.swing.JOptionPane.showMessageDialog(null, "Intenta de nuevo.");
         }
     }
 
-    public String leerOpcionTexto(String msg, String op1, String op2, String op3) {
+    public String leerOpcionTexto(String mensaje, String op1, String op2, String op3) {
         while (true) {
-            String s = javax.swing.JOptionPane.showInputDialog(msg);
-            if (s == null) {
+            String textoIngresado = javax.swing.JOptionPane.showInputDialog(mensaje);
+            if (textoIngresado == null) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Intenta de nuevo.");
                 continue;
             }
-            s = s.trim();
-            if (s.equals(op1) || s.equals(op2) || s.equals(op3)) return s;
+            textoIngresado = textoIngresado.trim();
+            if (textoIngresado.equals(op1) || textoIngresado.equals(op2) || textoIngresado.equals(op3)) return textoIngresado;
                 javax.swing.JOptionPane.showMessageDialog(null, "Intenta de nuevo.");
         }
     }
 
-    public String leerOpcionTexto(String msg, String op1, String op2, String op3, String op4, String op5) {
+    public String leerOpcionTexto(String mensaje, String op1, String op2, String op3, String op4, String op5) {
         while (true) {
-            String s = javax.swing.JOptionPane.showInputDialog(msg);
-            if (s == null) {
+            String textoIngresado = javax.swing.JOptionPane.showInputDialog(mensaje);
+            if (textoIngresado == null) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Intenta de nuevo.");
                 continue;
             }
-            s = s.trim();
-            if (s.equals(op1) || s.equals(op2) || s.equals(op3) || s.equals(op4) || s.equals(op5)) return s;
+            textoIngresado = textoIngresado.trim();
+            if (textoIngresado.equals(op1) || textoIngresado.equals(op2) || textoIngresado.equals(op3) || textoIngresado.equals(op4) || textoIngresado.equals(op5)) return textoIngresado;
                 javax.swing.JOptionPane.showMessageDialog(null, "Intenta de nuevo.");
         }
     }
 
-    public int parseEnteroSeguro(String s, int fallback) {
+    public int parseEnteroSeguro(String textoIngresado, int fallback) {
         try {
-            return Integer.parseInt(s);
+            return Integer.parseInt(textoIngresado);
         } catch (Exception e) {
             return fallback;
         }
