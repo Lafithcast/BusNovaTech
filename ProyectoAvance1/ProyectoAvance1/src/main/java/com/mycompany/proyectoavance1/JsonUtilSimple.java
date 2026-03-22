@@ -18,10 +18,10 @@ public class JsonUtilSimple {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(ruta));
-            String line;
+            String lineaActual;
             String contenido = "";
-            while ((line = br.readLine()) != null) {
-                contenido = contenido + line + "\n";
+            while ((lineaActual = br.readLine()) != null) {
+                contenido = contenido + lineaActual + "\n";
             }
             br.close();
             return contenido;
@@ -44,27 +44,27 @@ public class JsonUtilSimple {
         }
     }
 
-    public static String escape(String s) {
-        if (s == null) return "";
-        s = s.replace("\\", "\\\\");
-        s = s.replace("\"", "\\\"");
-        return s;
+    public static String escape(String texto) {
+        if (texto == null) return "";
+        texto = texto.replace("\\", "\\\\");
+        texto = texto.replace("\"", "\\\"");
+        return texto;
     }
 
-    public static String unescape(String s) {
-        if (s == null) return "";
-        s = s.replace("\\\"", "\"");
-        s = s.replace("\\\\", "\\");
-        return s;
+    public static String unescape(String texto) {
+        if (texto == null) return "";
+        texto = texto.replace("\\\"", "\"");
+        texto = texto.replace("\\\\", "\\");
+        return texto;
     }
 
     public static String extraerString(String json, String key) {
         try {
             String patron = "\"" + key + "\"";
-            int i = json.indexOf(patron);
-            if (i < 0) return null;
+            int posicionClave = json.indexOf(patron);
+            if (posicionClave < 0) return null;
 
-            int dosP = json.indexOf(":", i);
+            int dosP = json.indexOf(":", posicionClave);
             if (dosP < 0) return null;
 
             int q1 = json.indexOf("\"", dosP);
@@ -86,22 +86,22 @@ public class JsonUtilSimple {
     public static int extraerInt(String json, String key, int fallback) {
         try {
             String patron = "\"" + key + "\"";
-            int i = json.indexOf(patron);
-            if (i < 0) return fallback;
+            int posicionClave = json.indexOf(patron);
+            if (posicionClave < 0) return fallback;
 
-            int dosP = json.indexOf(":", i);
+            int dosP = json.indexOf(":", posicionClave);
             if (dosP < 0) return fallback;
 
-            int j = dosP + 1;
-            while (j < json.length() && (json.charAt(j) == ' ' || json.charAt(j) == '\n' || json.charAt(j) == '\r' || json.charAt(j) == '\t')) j++;
+            int inicioNumero = dosP + 1;
+            while (inicioNumero < json.length() && (json.charAt(inicioNumero) == ' ' || json.charAt(inicioNumero) == '\n' || json.charAt(inicioNumero) == '\r' || json.charAt(inicioNumero) == '\t')) inicioNumero++;
 
-            int k = j;
-            while (k < json.length()) {
-                char c = json.charAt(k);
-                if ((c >= '0' && c <= '9') || c == '-') k++;
+            int finNumero = inicioNumero;
+            while (finNumero < json.length()) {
+                char c = json.charAt(finNumero);
+                if ((c >= '0' && c <= '9') || c == '-') finNumero++;
                 else break;
             }
-            String num = json.substring(j, k).trim();
+            String num = json.substring(inicioNumero, finNumero).trim();
             return Integer.parseInt(num);
         } catch (Exception e) {
             return fallback;
