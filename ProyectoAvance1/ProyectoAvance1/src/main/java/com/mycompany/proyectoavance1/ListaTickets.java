@@ -46,8 +46,8 @@ public class ListaTickets {
         actual.setValor(ticket);
     }
     public Ticket sacarPrimero() {
-    if (cabeza == null) {
-        return null;
+        if (cabeza == null) {
+            return null;
     }
 
     Ticket ticketPrimero = cabeza.getValor();
@@ -59,11 +59,11 @@ public class ListaTickets {
     public int tamano(){ 
         return tamano; 
     }
-    public boolean estaVacia() {
-    return cabeza == null;
+    public boolean estaVacia(){
+        return cabeza == null;
     }
 
-    public NodoTicketRepo getCabeza()
-    { return cabeza; 
+    public NodoTicketRepo getCabeza(){ 
+        return cabeza; 
     }
 }

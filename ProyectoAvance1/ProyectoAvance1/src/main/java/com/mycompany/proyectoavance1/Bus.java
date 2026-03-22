@@ -76,8 +76,8 @@ public class Bus {
         return filaEspera.tamano();
     }
     
-    public boolean estaCompletamenteVacio() {
-    return ticketEnAtencion == null && filaEspera.estaVacia();
+    public boolean estaCompletamenteVacio(){
+        return ticketEnAtencion == null && filaEspera.estaVacia();
     }
 
     public String resumenBus() {

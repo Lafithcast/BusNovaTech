@@ -13,8 +13,8 @@ public class ListaBuses {
     private int tamano;
     
     public int obtenerNumeroMayorBus() {
-    if (cabeza == null) {
-        return 0;
+        if (cabeza == null) {
+            return 0;
     }
 
     int numeroMayor = 0;
@@ -31,8 +31,8 @@ public class ListaBuses {
     }
     
     public Bus obtenerUltimoBus() {
-    if (cabeza == null) {
-        return null;
+        if (cabeza == null) {
+            return null;
     }
 
     NodoBus actual = cabeza;
@@ -45,8 +45,8 @@ public class ListaBuses {
     }
     
     public boolean eliminarUltimoBus() {
-    if (cabeza == null) {
-        return false;
+        if (cabeza == null) {
+            return false;
     }
 
     if (cabeza.getSiguiente() == null) {

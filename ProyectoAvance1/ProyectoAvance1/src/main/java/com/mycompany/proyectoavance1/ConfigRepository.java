@@ -23,8 +23,8 @@ public class ConfigRepository {
             return Configuracion.fromJSON(json);
     }
     //Guarda la configuración recibida en el archivo JSON
-    public boolean guardar(Configuracion c) {
-        if (c == null) return false;
-            return JsonUtilSimple.escribirArchivo(ruta, c.toJSON());
+    public boolean guardar(Configuracion configuracion) {
+        if (configuracion == null) return false;
+            return JsonUtilSimple.escribirArchivo(ruta, configuracion.toJSON());
     }
 }
