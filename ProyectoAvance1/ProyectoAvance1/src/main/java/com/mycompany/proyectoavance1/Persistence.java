@@ -11,12 +11,15 @@ public class Persistence {
 
     private ConfigRepository configRepository;
     private TicketRepository ticketRepository;
+    private AtendidosRepository atendidosRepository;
 
     public Persistence() {
         configRepository = new ConfigRepository("config.json");
         ticketRepository = new TicketRepository("tiquetes.json");
+        atendidosRepository = new AtendidosRepository("atendidos.json");
     }
 
     public ConfigRepository getConfigRepository() { return configRepository; }
     public TicketRepository getTicketRepository() { return ticketRepository; }
+    public AtendidosRepository getAtendidosRepository() {return atendidosRepository;}
 }

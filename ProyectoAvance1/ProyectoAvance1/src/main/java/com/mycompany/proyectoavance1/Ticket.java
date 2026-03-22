@@ -22,12 +22,24 @@ public class Ticket {
     private int edad;
     private String monedaCuenta;
     private String horaCompra;
-    private String horaAbordaje;
+    private String fechaHoraAbordaje;
     private String servicio;
     private char tipoBus;
+    private String estadoTicket;
+    private String fechaHoraAtencion;
+    private String terminalCompra;
+    private int numeroBusAbordado;
+    private double montoCobrado;
+    private boolean pagado;
 
     public Ticket() {
-        horaAbordaje = "NA";
+        fechaHoraAbordaje = "NA";
+        fechaHoraAtencion = "NA";
+        terminalCompra = "";
+        numeroBusAbordado = 0;
+        montoCobrado = 0;
+        pagado = false;
+        estadoTicket = "Pendiente";
     }
         /**
      * Crea un nuevo ticket con la información básica del cliente.
@@ -49,12 +61,36 @@ public class Ticket {
         nuevoTicket.servicio = servicio;
         nuevoTicket.tipoBus = tipo;
         nuevoTicket.horaCompra = obtenerFecha();
-        nuevoTicket.horaAbordaje = "NA";
+        nuevoTicket.fechaHoraAbordaje = "NA";
+        nuevoTicket.fechaHoraAtencion = "NA";
+        nuevoTicket.pagado = false;
+        nuevoTicket.numeroBusAbordado = 0;
+        nuevoTicket.montoCobrado = 0;
+        nuevoTicket.estadoTicket = "Pendiente";
         return nuevoTicket;
     }
 
     public void marcarAbordajeAhora() {
-        horaAbordaje = obtenerFecha();
+        fechaHoraAbordaje = obtenerFecha();
+    }
+    
+    public void marcarAtencion(String terminalCompra, int numeroBusAbordado, double montoCobrado, boolean pagado) {
+        this.fechaHoraAtencion = obtenerFecha();
+        this.fechaHoraAbordaje = this.fechaHoraAtencion;
+        this.terminalCompra = terminalCompra;
+        this.numeroBusAbordado = numeroBusAbordado;
+        this.montoCobrado = montoCobrado;
+        this.pagado = pagado;
+
+        if (pagado) {
+            this.estadoTicket = "Atendido";
+        } else {
+            this.estadoTicket = "No Pagado";
+        }
+    }
+
+    public void marcarEnAtencion() {
+        estadoTicket = "En Atencion";
     }
 
     public String resumen() {
@@ -63,62 +99,68 @@ public class Ticket {
                 " | Edad=" + edad +
                 " | Moneda=" + monedaCuenta +
                 " | Compra=" + horaCompra +
-                " | Abordaje=" + horaAbordaje +
+                " | Abordaje=" + fechaHoraAbordaje +
                 " | Servicio=" + servicio +
                 " | TipoBus=" + tipoBus;
     }
 
-    public int getId() { return id; }
-    public String getHoraCompra() { return horaCompra; }
-    public String getHoraAbordaje() { return horaAbordaje; }
-    public char getTipoBus() { return tipoBus; }
-
-    public String toJSON() {
-        String jsonTexto = "{";
-        jsonTexto += "\"nombre\":\"" + JsonUtilSimple.escape(nombre) + "\",";
-        jsonTexto += "\"id\":" + id + ",";
-        jsonTexto += "\"edad\":" + edad + ",";
-        jsonTexto += "\"moneda\":\"" + JsonUtilSimple.escape(monedaCuenta) + "\",";
-        jsonTexto += "\"horaCompra\":\"" + JsonUtilSimple.escape(horaCompra) + "\",";
-        jsonTexto += "\"horaAbordaje\":\"" + JsonUtilSimple.escape(horaAbordaje) + "\",";
-        jsonTexto += "\"servicio\":\"" + JsonUtilSimple.escape(servicio) + "\",";
-        jsonTexto += "\"tipoBus\":\"" + tipoBus + "\"";
-        jsonTexto += "}";
-        return jsonTexto;
+    public int getId() { 
+               return id;
     }
 
-    public static Ticket fromJSONBloque(String bloque) {
-        try {
-            if (bloque == null) return null;
+    public String getNombre() {
+        return nombre;
+    }
 
-            String nombre = JsonUtilSimple.extraerString(bloque, "nombre");
-            int id = JsonUtilSimple.extraerInt(bloque, "id", -1);
-            int edad = JsonUtilSimple.extraerInt(bloque, "edad", -1);
-            String moneda = JsonUtilSimple.extraerString(bloque, "moneda");
-            String horaCompra = JsonUtilSimple.extraerString(bloque, "horaCompra");
-            String horaAbordaje = JsonUtilSimple.extraerString(bloque, "horaAbordaje");
-            String servicio = JsonUtilSimple.extraerString(bloque, "servicio");
-            String tipo = JsonUtilSimple.extraerString(bloque, "tipoBus");
+    public int getEdad() {
+        return edad;
+    }
 
-            if (nombre == null) return null;
-            if (id < 1) return null;
-            if (edad < 0) return null;
-            if (moneda == null || horaCompra == null || horaAbordaje == null || servicio == null || tipo == null) return null;
-            if (tipo.length() < 1) return null;
+    public String getMonedaCuenta() {
+        return monedaCuenta;
+    }
 
-            Ticket ticketReconstruido = new Ticket();
-            ticketReconstruido.nombre = nombre;
-            ticketReconstruido.id = id;
-            ticketReconstruido.edad = edad;
-            ticketReconstruido.monedaCuenta = moneda;
-            ticketReconstruido.horaCompra = horaCompra;
-            ticketReconstruido.horaAbordaje = horaAbordaje;
-            ticketReconstruido.servicio = servicio;
-            ticketReconstruido.tipoBus = tipo.charAt(0);
+    public String getFechaHoraCompra() {
+        return horaCompra;
+    }
 
-            return ticketReconstruido;
-        } catch (Exception e) {
-            return null;
-        }
+    public String getFechaHoraAbordaje() {
+        return fechaHoraAbordaje;
+    }
+
+    public String getServicio() {
+        return servicio;
+    }
+
+    public char getTipoBus() {
+        return tipoBus;
+    }
+
+    public String getEstadoTicket() {
+        return estadoTicket;
+    }
+
+    public String getFechaHoraAtencion() {
+        return fechaHoraAtencion;
+    }
+
+    public String getTerminalCompra() {
+        return terminalCompra;
+    }
+
+    public int getNumeroBusAbordado() {
+        return numeroBusAbordado;
+    }
+
+    public double getMontoCobrado() {
+        return montoCobrado;
+    }
+
+    public boolean isPagado() {
+        return pagado;
+    }
+
+    public void setTerminalCompra(String terminalCompra) {
+        this.terminalCompra = terminalCompra;
     }
 }

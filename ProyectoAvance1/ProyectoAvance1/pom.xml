@@ -10,4 +10,12 @@
         <maven.compiler.release>24</maven.compiler.release>
         <exec.mainClass>com.mycompany.proyectoavance1.ProyectoAvance1</exec.mainClass>
     </properties>
+        <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.13.2</version>
+        </dependency>
+    </dependencies>
+    
 </project>
