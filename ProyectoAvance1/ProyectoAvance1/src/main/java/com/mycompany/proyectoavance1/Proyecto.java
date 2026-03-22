@@ -35,11 +35,14 @@ public class Proyecto {
         }
 
         //tiquetes.json
-        Ticket[] guardados = persistence.getTicketRepository().cargarTickets();
-        int i = 0;
-        while (i < guardados.length) {
-            if (guardados[i] != null) cola.encolar(guardados[i]);
-            i++;
+        ListaTickets guardados = persistence.getTicketRepository().cargarTickets();
+        int indice = 0;
+        while (indice < guardados.tamano()){
+            Ticket ticketGuardado = guardados.obtener(indice);
+            if (ticketGuardado != null){
+                cola.encolar(ticketGuardado);
+        }
+            indice++;
         }
 
         if (!login()) {
