@@ -104,15 +104,15 @@ public class Proyecto {
                 return;
             }
 
-            int op = entrada.parseEnteroSeguro(opStr, -1);
+            int opcionMenu = entrada.parseEnteroSeguro(opStr, -1);
 
-            if (op == 1) crearTicket();
-            else if (op == 2) llamarSiguiente();
-            else if (op == 3) verEstado();
-            else if (op == 4) agregarUsuario();
-            else if (op == 5) agregarBuses();
-            else if (op == 6) eliminarBuses();
-            else if (op == 0) {
+            if (opcionMenu == 1) crearTicket();
+            else if (opcionMenu == 2) llamarSiguiente();
+            else if (opcionMenu == 3) verEstado();
+            else if (opcionMenu == 4) agregarUsuario();
+            else if (opcionMenu == 5) agregarBuses();
+            else if (opcionMenu == 6) eliminarBuses();
+            else if (opcionMenu == 0) {
                 salirGuardando();
                 return;
             } else {
@@ -152,28 +152,28 @@ public class Proyecto {
         else if (tipoOp.equals("2")) tipo = 'D';
         else tipo = 'N';
 
-        Ticket t = Ticket.crearNuevo(nombre, id, edad, moneda, servicio, tipo);
-        cola.encolar(t);
+        Ticket ticket = Ticket.crearNuevo(nombre, id, edad, moneda, servicio, tipo);
+        cola.encolar(ticket);
 
         //guardar
-        persistence.getTicketRepository().agregarTicket(t);
+        persistence.getTicketRepository().agregarTicket(ticket);
 
-        javax.swing.JOptionPane.showMessageDialog(null, "Ticket creado:\n" + t.resumen());
+        javax.swing.JOptionPane.showMessageDialog(null, "Ticket creado:\n" + ticket.resumen());
     }
     
 
     private void llamarSiguiente() {
-        Ticket t = cola.desencolar();
-        if (t == null) {
+        Ticket ticket = cola.desencolar();
+        if (ticket == null) {
             javax.swing.JOptionPane.showMessageDialog(null, "No hay tickets en cola.");
             return;
         }
 
-        t.marcarAbordajeAhora();
+        ticket.marcarAbordajeAhora();
         persistence.getTicketRepository().actualizarTicket(t);
 
         javax.swing.JOptionPane.showMessageDialog(null,
-                "Siguiente:\n" + t.resumen() + "\n\nHora abordaje: " + t.getHoraAbordaje());
+                "Siguiente:\n" + ticket.resumen() + "\n\nHora abordaje: " + ticket.getHoraAbordaje());
     }
 
     private void verEstado() {
