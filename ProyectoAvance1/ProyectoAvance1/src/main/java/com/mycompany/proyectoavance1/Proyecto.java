@@ -1,10 +1,10 @@
 /**
  * Clase principal de lógica del sistema.
- * <contrasena>
+ * <p>
  * Se encarga de coordinar el flujo general de la aplicación:
  * carga de configuración, autenticación de usuarios, manejo
  * de tickets, colas de prioridad, menú principal y persistencia.
- * </contrasena>
+ * </p>
  */
 
 package com.mycompany.proyectoavance1;
@@ -134,7 +134,7 @@ public class Proyecto {
                     + "4) Agregar usuario\n"
                     + "5) Agregar Buses\n"
                     + "6) Eliminar Buses\n"
-                    + "7) Ver tickets atendidos"
+                    + "7) Ver tickets atendidos\n"
                     + "0) Salir\n\n"
                     + "Opcion:"
             );
