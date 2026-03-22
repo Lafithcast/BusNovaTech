@@ -1,65 +1,57 @@
 /**
- * Representa la configuración general del sistema.
- * <contrasena>
- * Esta clase almacena datos principales de la terminal,
+ * Representa la configuracion general del sistema.
+ * <p>
+ * Almacena datos principales de la terminal,
  * como su nombre, la cantidad total de buses y la lista
- * de usuarios con sus respectivas contraseñas.
- * </contrasena>
- * <contrasena>
- * También incluye métodos para validar configuraciones,
- * registrar usuarios, autenticar accesos y convertir
- * la información a formato JSON.
- * </contrasena>
+ * de usuarios con sus respectivas contrasenas.
+ * </p>
  */
-
-
 package com.mycompany.proyectoavance1;
 public class Configuracion {
 
     private String nombreTerminal;
     private int cantidadBuses;
-
-    private String[] usuarios;
-    private String[] contras;
-    private int cantUsuarios;
+    private ListaUsuarios listaUsuarios;
 
     public Configuracion() {
         nombreTerminal = "";
         cantidadBuses = 0;
-        usuarios = new String[10];
-        contras = new String[10];
-        cantUsuarios = 0;
+        listaUsuarios = new ListaUsuarios();
     }
-    //Verifica si la configuración actual contiene los datos mínimos válidos.
+
+    
     public boolean tieneConfigValida() {
-        if (nombreTerminal == null){
+        if (nombreTerminal == null) {
             return false;
         }
-        if (nombreTerminal.trim().equals("")){
+        if (nombreTerminal.trim().equals("")) {
             return false;
         }
-        if (cantidadBuses < 3){
+        if (cantidadBuses < 3) {
             return false;
         }
-        if (cantUsuarios <= 0){
+        if (listaUsuarios.tamano() <= 0) {
             return false;
         }
         return true;
     }
 
-    public String getNombreTerminal() { return nombreTerminal; }
-    public int getCantidadBuses() { return cantidadBuses; }
+    public String getNombreTerminal(){ 
+        return nombreTerminal; 
+    }
+    public int getCantidadBuses(){ 
+        return cantidadBuses; 
+    }
 
-    public void setNombreTerminal(String nombre) { nombreTerminal = nombre; }
-    public void setCantidadBuses(int cantidad) { cantidadBuses = cantidad; }
+    public void setNombreTerminal(String nombre){ 
+        nombreTerminal = nombre; 
+    }
+    public void setCantidadBuses(int cantidad){ 
+        cantidadBuses = cantidad; 
+    }
 
     public boolean existeUsuario(String nombreUsuario) {
-        int indice = 0;
-        while (indice < cantUsuarios) {
-            if (usuarios[indice] != null && usuarios[indice].equals(nombreUsuario)) return true;
-            indice++;
-        }
-        return false;
+        return listaUsuarios.existeUsuario(nombreUsuario);
     }
 
     public void agregarUsuario(String nombreUsuario, String contrasena) {
@@ -69,57 +61,35 @@ public class Configuracion {
         if (nombreUsuario.equals("") || contrasena.equals("")) return;
         if (existeUsuario(nombreUsuario)) return;
 
-        if (cantUsuarios >= usuarios.length) crecerUsuarios();
-
-        usuarios[cantUsuarios] = nombreUsuario;
-        contras[cantUsuarios] = contrasena;
-        cantUsuarios++;
-    }
-
-    private void crecerUsuarios() {
-        String[] nuevosUsuarios = new String[usuarios.length + 10];
-        String[] nuevasContrasenas = new String[contras.length + 10];
-
-        int indice = 0;
-        while (indice < usuarios.length) {
-            nuevosUsuarios[indice] = usuarios[indice];
-            nuevasContrasenas[indice] = contras[indice];
-            indice++;
-        }
-        usuarios = nuevosUsuarios;
-        contras = nuevasContrasenas;
+        listaUsuarios.agregar(nombreUsuario, contrasena);
     }
 
     public boolean validarLogin(String nombreUsuario, String contrasena) {
-        int indice = 0;
-        while (indice < cantUsuarios) {
-            if (usuarios[indice] != null && usuarios[indice].equals(nombreUsuario)) {
-                if (contras[indice] != null && contras[indice].equals(contrasena)) return true;
-            }
-            indice++;
-        }
-        return false;
+        return listaUsuarios.validarLogin(nombreUsuario, contrasena);
     }
 
     public String toJSON() {
-        String jsonTexto = "{\nombre";
-        jsonTexto += "  \"nombreTerminal\":\"" + JsonUtilSimple.escape(nombreTerminal) + "\",\nombre";
-        jsonTexto += "  \"cantidadBuses\":" + cantidadBuses + ",\nombre";
-        jsonTexto += "  \"usuarios\":[\nombre";
+        String jsonTexto = "{\n";
+        jsonTexto += "  \"nombreTerminal\":\"" + JsonUtilSimple.escape(nombreTerminal) + "\",\n";
+        jsonTexto += "  \"cantidadBuses\":" + cantidadBuses + ",\n";
+        jsonTexto += "  \"usuarios\":[\n";
 
-        int indice = 0;
-        while (indice < cantUsuarios) {
-            String usuarioActual = usuarios[indice];
-            String contrasenaActual = contras[indice];
-
-            jsonTexto += "    {\"nombreUsuario\":\"" + JsonUtilSimple.escape(usuarioActual) + "\",\"contrasena\":\"" + JsonUtilSimple.escape(contrasenaActual) + "\"}";
-            if (indice < cantUsuarios - 1) jsonTexto += ",";
-            jsonTexto += "\nombre";
-            indice++;
+        //ista enlazada
+        NodoUsuario actual = listaUsuarios.getCabeza();
+        int contador = 0;
+        while (actual != null) {
+            jsonTexto += "    {\"nombreUsuario\":\"" + JsonUtilSimple.escape(actual.getNombreUsuario())
+                + "\",\"contrasena\":\"" + JsonUtilSimple.escape(actual.getContrasena()) + "\"}";
+            if (actual.getSiguiente() != null) {
+                jsonTexto += ",";
+            }
+            jsonTexto += "\n";
+            actual = actual.getSiguiente();
+            contador++;
         }
 
-        jsonTexto += "  ]\nombre";
-        jsonTexto += "}\nombre";
+        jsonTexto += "  ]\n";
+        jsonTexto += "}\n";
         return jsonTexto;
     }
 
@@ -150,14 +120,16 @@ public class Configuracion {
                 String nombreUsuario = JsonUtilSimple.extraerString(bloque, "nombreUsuario");
                 String contrasena = JsonUtilSimple.extraerString(bloque, "contrasena");
 
-                if (nombreUsuario != null && contrasena != null) configuracion.agregarUsuario(nombreUsuario, contrasena);
+                if (nombreUsuario != null && contrasena != null) {
+                    configuracion.agregarUsuario(nombreUsuario, contrasena);
+                }
 
                 posicionBusqueda = finObjeto + 1;
             }
 
             if (!configuracion.tieneConfigValida()) return null;
             return configuracion;
-        } catch (Exception e) {
+        } catch (Exception excepcion) {
             return null;
         }
     }
