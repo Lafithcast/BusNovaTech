@@ -51,9 +51,9 @@ public class ColaPrioridad {
 
     public String vistaPrevia(int cantidadMaxima) {
         String string = "";
-        string += "Preferencial:\nuevoNodo" + obtenerTopCola(cabezaPreferencial, cantidadMaxima);
-        string += "Directo:\nuevoNodo" + obtenerTopCola(cabezaDirecto, cantidadMaxima);
-        string += "Normal:\nuevoNodo" + obtenerTopCola(cabezaNormal, cantidadMaxima);
+        string += "Preferencial:\n" + obtenerTopCola(cabezaPreferencial, cantidadMaxima);
+        string += "Directo:\n" + obtenerTopCola(cabezaDirecto, cantidadMaxima);
+        string += "Normal:\n" + obtenerTopCola(cabezaNormal, cantidadMaxima);
         return string;
     }
 
@@ -63,13 +63,13 @@ public class ColaPrioridad {
         NodoTicket nodoActual = cabeza;
 
         while (nodoActual != null && contador < cantidadMaxima) {
-            resultado += " - " + nodoActual.getValor().resumen() + "\nuevoNodo";
+            resultado += " - " + nodoActual.getValor().resumen() + "\n";
             nodoActual = nodoActual.getSiguiente();
             contador++;
         }
 
         if (contador == 0){ 
-            resultado += " - (vacio)\nuevoNodo";
+            resultado += " - (vacio)\n";
         }
             return resultado;
     }
