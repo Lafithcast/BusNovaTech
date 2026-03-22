@@ -170,7 +170,7 @@ public class Proyecto {
         }
 
         ticket.marcarAbordajeAhora();
-        persistence.getTicketRepository().actualizarTicket(t);
+        persistence.getTicketRepository().actualizarTicket(ticket);
 
         javax.swing.JOptionPane.showMessageDialog(null,
                 "Siguiente:\n" + ticket.resumen() + "\n\nHora abordaje: " + ticket.getHoraAbordaje());
