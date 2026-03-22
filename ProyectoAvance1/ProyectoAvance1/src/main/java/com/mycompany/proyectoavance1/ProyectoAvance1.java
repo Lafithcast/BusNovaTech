@@ -2,7 +2,7 @@
 package com.mycompany.proyectoavance1;
 public class ProyectoAvance1 {
     public static void main(String[] args) {
-        Proyecto Proyecto = new Proyecto();
-        Proyecto.iniciar();
+        Proyecto proyecto = new Proyecto();
+        proyecto.iniciar();
     }
 }

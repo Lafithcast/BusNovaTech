@@ -48,13 +48,13 @@ public class Ticket {
         nuevoTicket.monedaCuenta = moneda;
         nuevoTicket.servicio = servicio;
         nuevoTicket.tipoBus = tipo;
-        nuevoTicket.horaCompra = "" + obtenerFecha();
+        nuevoTicket.horaCompra = obtenerFecha();
         nuevoTicket.horaAbordaje = "NA";
         return nuevoTicket;
     }
 
     public void marcarAbordajeAhora() {
-        horaAbordaje = "" + obtenerFecha();
+        horaAbordaje = obtenerFecha();
     }
 
     public String resumen() {
