@@ -16,6 +16,13 @@ public class Proyecto {
     private InputJOP entrada;
     private Persistence persistence;
 
+    /**
+     * Constructor del sistema.
+     * <p>
+     * Inicializa la cola de prioridad, la lista de buses,
+     * los utilitarios de entrada y los repositorios de persistencia.
+     * </p>
+     */
     public Proyecto() {
         cola = new ColaPrioridad();
         listaBuses = new ListaBuses();
@@ -24,6 +31,13 @@ public class Proyecto {
         config = null;
     }
 
+    /**
+     * Inicializa los buses según la configuración cargada.
+     * <p>
+     * Crea los buses con números secuenciales. El bus 1 es preferencial,
+     * el bus 2 es directo, y los demás son normales.
+     * </p>
+     */
     private void inicializarBuses() {
         listaBuses = new ListaBuses();
 
@@ -43,6 +57,12 @@ public class Proyecto {
         }
     }
 
+    /**
+     * Busca un bus disponible según el tipo solicitado.
+     * 
+     * @param tipoBus Tipo de bus a buscar ('P', 'D' o 'N')
+     * @return El primer bus del tipo especificado, o {@code null} si no hay
+     */
     private Bus buscarBusDisponiblePorTipo(char tipoBus) {
         int posicion = 0;
 
@@ -59,6 +79,15 @@ public class Proyecto {
         return null;
     }
 
+     /**
+     * Inicia el sistema.
+     * <p>
+     * Carga la configuración desde config.json. Si no existe,
+     * inicia el proceso de configuración desde cero. Luego inicializa los buses,
+     * carga los tickets pendientes desde tiquetes.json, solicita login
+     * y muestra el menú principal.
+     * </p>
+     */
     public void iniciar() {
         javax.swing.JOptionPane.showMessageDialog(null, "Bienvenido al Sistema");
 
@@ -92,6 +121,13 @@ public class Proyecto {
         menu();
     }
 
+    /**
+     * Configura el sistema desde cero.
+     * <p>
+     * Solicita al usuario el nombre de la terminal, la cantidad de buses
+     * y crea un usuario inicial.
+     * </p>
+     */
     private void configurarDesdeCero() {
         String nombreTerminal = entrada.leerTextoNoVacio("Nombre de la terminal:");
         int totalBuses = entrada.leerEnteroRango("Cantidad total de buses :\nExcluyendo 1 normal y 1 preferencial.",
@@ -107,6 +143,11 @@ public class Proyecto {
         config.agregarUsuario(usuario, contrasena);
     }
 
+     /**
+     * Solicita al usuario que inicie sesión.
+     * Permite 3 intentos.
+     * @return {@code true} si el login fue exitoso, {@code false} si se superaron los intentos
+     */
     private boolean login() {
         int intentos = 0;
         while (intentos < 3) {
@@ -123,7 +164,9 @@ public class Proyecto {
         }
         return false;
     }
-
+    /**
+     * Muestra el menú principal y procesa las opciones del usuario.
+     */
     private void menu() {
         while (true) {
             String opStr = javax.swing.JOptionPane.showInputDialog(
@@ -169,6 +212,15 @@ public class Proyecto {
         }
     }
 
+    /**
+     * Crea un nuevo ticket.
+     * <p>
+     * Solicita nombre, ID, edad, moneda, servicio y tipo de bus.
+     * Busca un bus disponible del tipo solicitado y asigna el ticket
+     * directamente si el bus está libre, o lo encola si está ocupado.
+     * Guarda el ticket en tiquetes.json.
+     * </p>
+     */
     private void crearTicket() {
         String nombre = entrada.leerTextoNoVacio("Crear Ticket\nNombre:");
         int id = entrada.leerEnteroRango("Crear Ticket\nID:", 1, 999999999);
@@ -243,6 +295,11 @@ public class Proyecto {
         }
     }
 
+    /**
+     * Obtiene el monto a cobrar según el servicio.
+     * @param servicio El tipo de servicio
+     * @return El monto correspondiente al servicio, o 0 si es desconocido
+     */
     private double obtenerMontoPorServicio(String servicio) {
         if (servicio == null) {
             return 0;
@@ -261,6 +318,14 @@ public class Proyecto {
         return 0;
     }
 
+    /**
+     * Atiende al siguiente ticket del bus.
+     * <p>
+     * Solicita el número de bus, verifica si hay ticket en fila,
+     * muestra el monto a pagar, registra el pago y marca el ticket como atendido.
+     * Si el cliente paga, el ticket pasa a atendidos.json.
+     * </p>
+     */
     private void llamarSiguiente() {
         int numeroBus = entrada.leerEnteroRango("Abordar Ticket\nDigite el numero del bus:", 1, config.getCantidadBuses());
 
@@ -323,6 +388,9 @@ public class Proyecto {
         busSeleccionado.finalizarAtencion();
     }
 
+    /**
+     * Muestra el estado actual de todos los buses.
+     */
     private void verEstado() {
         if (listaBuses == null || listaBuses.estaVacia()) {
             javax.swing.JOptionPane.showMessageDialog(null, "No hay buses registrados.");
@@ -355,6 +423,13 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null, mensaje);
     }
 
+    /**
+     * Agrega un nuevo usuario al sistema.
+     * <p>
+     * Solicita nombre de usuario y contraseña, verifica que no exista
+     * y guarda los cambios en config.json.
+     * </p>
+     */
     private void agregarUsuario() {
         String usuario = entrada.leerTextoNoVacio("Agregar Usuario\nUsuario:");
         if (config.existeUsuario(usuario)) {
@@ -370,6 +445,12 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null, "Usuario agregado y guardado en config.json.");
     }
 
+     /**
+     * Agrega nuevos buses al sistema.
+     * <p>
+     * Solicita la cantidad de buses a agregar, los crea y actualiza la configuración en config.json.
+     * </p>
+     */
     private void agregarBuses() {
         int cantidadActual = config.getCantidadBuses();
 
@@ -405,6 +486,14 @@ public class Proyecto {
         );
     }
 
+    /**
+     * Elimina buses del sistema.
+     * <p>
+     * Solo permite eliminar hasta dejar un mínimo de 3 buses.
+     * No elimina buses que tengan tickets pendientes.
+     * Actualiza la configuración en config.json.
+     * </p>
+     */
     private void eliminarBuses() {
         int cantidadActual = config.getCantidadBuses();
 
@@ -460,6 +549,9 @@ public class Proyecto {
         );
     }
 
+     /**
+     * Guarda todos los datos y sale del sistema.
+     */
     private void salirGuardando() {
         persistence.getConfigRepository().guardar(config);
         persistence.getTicketRepository().guardarListaCompleta();
@@ -467,6 +559,10 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null, "Guardado en JSON. Saliendo...");
     }
 
+     /**
+     * Muestra la lista de tickets atendidos.
+     * Carga los tickets desde atendidos.json y los muestra.
+     */
     private void verAtendidos() {
         ListaTickets listaAtendidos = persistence.getAtendidosRepository().obtenerAtendidos();
 
