@@ -32,6 +32,9 @@ public class Ticket {
     private double montoCobrado;
     private boolean pagado;
 
+     /**
+     * Constructor de la clase Ticket.
+     */
     public Ticket() {
         fechaHoraAbordaje = "NA";
         fechaHoraAtencion = "NA";
@@ -74,6 +77,13 @@ public class Ticket {
         fechaHoraAbordaje = obtenerFecha();
     }
     
+     /**
+     * Marca la atención del ticket.
+     * @param terminalCompra Terminal donde se realizó la compra
+     * @param numeroBusAbordado Número del bus que atendió al cliente
+     * @param montoCobrado Monto cobrado por el servicio
+     * @param pagado {@code true} si el cliente pagó, {@code false} en caso contrario
+     */
     public void marcarAtencion(String terminalCompra, int numeroBusAbordado, double montoCobrado, boolean pagado) {
         this.fechaHoraAtencion = obtenerFecha();
         this.fechaHoraAbordaje = this.fechaHoraAtencion;
