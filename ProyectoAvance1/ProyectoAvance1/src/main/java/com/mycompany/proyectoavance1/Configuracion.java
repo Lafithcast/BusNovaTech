@@ -19,7 +19,10 @@ public class Configuracion {
         listaUsuarios = new ListaUsuarios();
     }
 
-    
+    /**
+     * Verifica si la configuración actual es válida.
+     * @return {@code true} si la configuración es válida, {@code false} en caso contrario.
+     */
     public boolean tieneConfigValida() {
         if (nombreTerminal == null) {
             return false;
@@ -39,6 +42,7 @@ public class Configuracion {
     public String getNombreTerminal(){ 
         return nombreTerminal; 
     }
+    
     public int getCantidadBuses(){ 
         return cantidadBuses; 
     }
@@ -46,14 +50,29 @@ public class Configuracion {
     public void setNombreTerminal(String nombre){ 
         nombreTerminal = nombre; 
     }
+    
     public void setCantidadBuses(int cantidad){ 
         cantidadBuses = cantidad; 
     }
 
+     /**
+     * Verifica si existe un usuario con el nombre indicado.
+     * @param nombreUsuario El nombre del usuario a buscar
+     * @return {@code true} si el usuario existe, si no {@code false} 
+     */
     public boolean existeUsuario(String nombreUsuario) {
         return listaUsuarios.existeUsuario(nombreUsuario);
     }
 
+    /**
+     * Agrega un nuevo usuario a la lista de autorizados.
+     * <p>
+     * El método verifica que el nombre y la contraseña no sean nulos ni vacíos.
+     * Si el usuario ya existe, la operación se ignora.
+     * </p>
+     * @param nombreUsuario El nombre del nuevo usuario
+     * @param contrasena La contraseña del nuevo usuario
+     */
     public void agregarUsuario(String nombreUsuario, String contrasena) {
         if (nombreUsuario == null || contrasena == null) return;
         nombreUsuario = nombreUsuario.trim();
@@ -64,10 +83,32 @@ public class Configuracion {
         listaUsuarios.agregar(nombreUsuario, contrasena);
     }
 
+    /**
+     * Valida las credenciales de un usuario.
+     * <p>
+     * Verifica si existe un usuario con el nombre proporcionado
+     * y si la contraseña coincide con la registrada.
+     * </p>
+     * @param nombreUsuario El nombre del usuario
+     * @param contrasena La contraseña a validar
+     * @return {@code true} si las credenciales son correctas, {@code false} en caso contrario
+     */
     public boolean validarLogin(String nombreUsuario, String contrasena) {
         return listaUsuarios.validarLogin(nombreUsuario, contrasena);
     }
 
+    /**
+     * Convierte la configuración a formato JSON.
+     * <p>
+     * Genera una cadena JSON con la estructura:
+     * <ul>
+     *   <li>nombreTerminal: El nombre de la terminal</li>
+     *   <li>cantidadBuses: El número de buses</li>
+     *   <li>usuarios: Lista de usuarios registrados</li>
+     * </ul>
+     * </p>
+     * @return Una cadena con la configuración en formato JSON
+     */
     public String toJSON() {
         String jsonTexto = "{\n";
         jsonTexto += "  \"nombreTerminal\":\"" + JsonUtilSimple.escape(nombreTerminal) + "\",\n";
@@ -93,6 +134,17 @@ public class Configuracion {
         return jsonTexto;
     }
 
+    /**
+     * Crea un objeto Configuracion a partir de una cadena JSON.
+     * <p>
+     * Extrae los datos del JSON y construye un objeto de configuración.
+     * Si el JSON es inválido o no cumple con los criterios de validación,
+     * retorna {@code null}.
+     * </p>
+     * @param json La cadena en formato JSON que representa la configuración
+     * @return Un objeto {@link Configuracion} con los datos extraídos, 
+     * o {@code null} si no se pudo construir una configuración válida
+     */
     public static Configuracion fromJSON(String json) {
         try {
             if (json == null) return null;
