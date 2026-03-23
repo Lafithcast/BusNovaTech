@@ -13,6 +13,11 @@ public class Persistence {
     private TicketRepository ticketRepository;
     private AtendidosRepository atendidosRepository;
 
+    /**
+     * Constructor
+     * <p>
+     * Inicializa los tres repositorios con sus archivos correspondientes.
+     */
     public Persistence() {
         configRepository = new ConfigRepository("config.json");
         ticketRepository = new TicketRepository("tiquetes.json");
