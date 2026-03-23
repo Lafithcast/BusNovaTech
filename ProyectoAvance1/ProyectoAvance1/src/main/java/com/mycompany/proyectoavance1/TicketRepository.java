@@ -20,7 +20,7 @@ public class TicketRepository {
 
     public TicketRepository(String rutaArchivo) {
         ruta = rutaArchivo;
-        cache = new ListaTickets();
+        cache = cargarTickets();
     }
  /**
  * Carga los tickets desde el archivo JSON indicado en la ruta.

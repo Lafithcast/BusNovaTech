@@ -13,7 +13,7 @@ public class NodoBus {
     private NodoBus siguiente;
 
     public NodoBus(Bus bus) {
-        this.bus = bus;
+        this.bus = null;
         this.siguiente = null;
     }
 
