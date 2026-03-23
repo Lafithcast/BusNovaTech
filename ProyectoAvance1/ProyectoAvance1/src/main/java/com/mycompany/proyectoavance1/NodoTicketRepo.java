@@ -5,7 +5,7 @@ public class NodoTicketRepo {
     private NodoTicketRepo siguiente;
     
     public NodoTicketRepo(Ticket ticket){
-        valor = ticket;
+        valor = null;
         siguiente = null;
     } 
     public Ticket getValor(){

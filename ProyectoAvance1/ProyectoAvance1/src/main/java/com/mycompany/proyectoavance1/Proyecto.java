@@ -1,13 +1,13 @@
 /**
  * Clase principal de lógica del sistema.
  * <p>
- * Se encarga de coordinar el flujo general de la aplicación:
- * carga de configuración, autenticación de usuarios, manejo
- * de tickets, colas de prioridad, menú principal y persistencia.
+ * Se encarga de coordinar el flujo general de la aplicación: carga de
+ * configuración, autenticación de usuarios, manejo de tickets, colas de
+ * prioridad, menú principal y persistencia.
  * </p>
  */
-
 package com.mycompany.proyectoavance1;
+
 public class Proyecto {
 
     private Configuracion config;
@@ -59,6 +59,33 @@ public class Proyecto {
         return null;
     }
 
+    private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
+        if (tipoBusSolicitado == 'P' || tipoBusSolicitado == 'D') {
+            return buscarBusDisponiblePorTipo(tipoBusSolicitado);
+        }
+
+        Bus mejorBusNormal = null;
+        int menorCantidadEnFila = -1;
+        int posicionActual = 0;
+
+        while (posicionActual < listaBuses.tamano()) {
+            Bus busActual = listaBuses.obtenerBusEnPosicion(posicionActual);
+
+            if (busActual != null && busActual.getTipoBus() == 'N') {
+                int cantidadActualEnFila = busActual.cantidadEnFila();
+
+                if (mejorBusNormal == null || cantidadActualEnFila < menorCantidadEnFila) {
+                    mejorBusNormal = busActual;
+                    menorCantidadEnFila = cantidadActualEnFila;
+                }
+            }
+
+            posicionActual++;
+        }
+
+        return mejorBusNormal;
+    }
+
     public void iniciar() {
         javax.swing.JOptionPane.showMessageDialog(null, "Bienvenido al Sistema");
 
@@ -71,7 +98,13 @@ public class Proyecto {
             persistence.getConfigRepository().guardar(config);
         }
 
-        inicializarBuses();
+        ListaBuses listaBusesCargada = persistence.getColasRepository().cargarColas();
+
+        if (listaBusesCargada != null && !listaBusesCargada.estaVacia()) {
+            listaBuses = listaBusesCargada;
+        } else {
+            inicializarBuses();
+        }
 
         //tiquetes.json
         ListaTickets guardados = persistence.getTicketRepository().cargarTickets();
@@ -215,7 +248,7 @@ public class Proyecto {
         Ticket ticket = Ticket.crearNuevo(nombre, id, edad, moneda, servicio, tipo);
         ticket.setTerminalCompra(config.getNombreTerminal());
 
-        Bus busAsignado = buscarBusDisponiblePorTipo(tipo);
+        Bus busAsignado = buscarBusParaNuevoTicket(tipo);
 
         if (busAsignado == null) {
             javax.swing.JOptionPane.showMessageDialog(null, "No existe un bus disponible para ese tipo.");
@@ -225,6 +258,7 @@ public class Proyecto {
         if (busAsignado.estaLibre() && busAsignado.getFilaEspera().estaVacia()) {
             busAsignado.asignarAtencionDirecta(ticket);
             persistence.getTicketRepository().agregarTicket(ticket);
+            persistence.getColasRepository().guardarColas(listaBuses);
 
             javax.swing.JOptionPane.showMessageDialog(
                     null,
@@ -234,6 +268,7 @@ public class Proyecto {
         } else {
             busAsignado.agregarAFila(ticket);
             persistence.getTicketRepository().agregarTicket(ticket);
+            persistence.getColasRepository().guardarColas(listaBuses);
 
             javax.swing.JOptionPane.showMessageDialog(
                     null,
@@ -321,6 +356,7 @@ public class Proyecto {
         }
 
         busSeleccionado.finalizarAtencion();
+        persistence.getColasRepository().guardarColas(listaBuses);
     }
 
     private void verEstado() {
@@ -398,6 +434,7 @@ public class Proyecto {
 
         config.setCantidadBuses(cantidadActual + busesNuevos);
         persistence.getConfigRepository().guardar(config);
+        persistence.getColasRepository().guardarColas(listaBuses);
 
         javax.swing.JOptionPane.showMessageDialog(
                 null,
@@ -453,6 +490,7 @@ public class Proyecto {
 
         config.setCantidadBuses(cantidadActual - eliminados);
         persistence.getConfigRepository().guardar(config);
+        persistence.getColasRepository().guardarColas(listaBuses);
 
         javax.swing.JOptionPane.showMessageDialog(
                 null,
@@ -464,6 +502,7 @@ public class Proyecto {
         persistence.getConfigRepository().guardar(config);
         persistence.getTicketRepository().guardarListaCompleta();
         persistence.getAtendidosRepository().guardarListaCompleta();
+        persistence.getColasRepository().guardarColas(listaBuses);
         javax.swing.JOptionPane.showMessageDialog(null, "Guardado en JSON. Saliendo...");
     }
 
