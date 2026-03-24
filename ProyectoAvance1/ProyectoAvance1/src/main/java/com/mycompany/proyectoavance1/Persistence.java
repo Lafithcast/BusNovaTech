@@ -15,6 +15,10 @@ public class Persistence {
     private AtendidosRepository atendidosRepository;
     private ColaRepository colaRepository;
 
+    /**
+     * Constructor
+     * Inicializa los tres repositorios con sus archivos correspondientes.
+     */
     public Persistence() {
         configRepository = new ConfigRepository("config.json");
         ticketRepository = new TicketRepository("tiquetes.json");
