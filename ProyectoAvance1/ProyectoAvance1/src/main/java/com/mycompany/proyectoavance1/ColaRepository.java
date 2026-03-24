@@ -40,8 +40,6 @@ public class ColaRepository {
                 return listaBusesCargada;
             }
         } catch (Exception excepcion) {
-            // Si ocurre un error, se devuelve null para que el sistema
-            // pueda inicializar los buses desde cero.
         }
 
         return null;
@@ -51,7 +49,7 @@ public class ColaRepository {
      * Guarda en el archivo JSON el estado actual de la lista de buses.
      *
      * @param listaBusesActual lista de buses que se desea guardar
-     * @return true si se guardó correctamente, false si ocurrió un error
+     * @return {@code true} si se guardó correctamente, {@code false} si ocurrió un error
      */
     public boolean guardarColas(ListaBuses listaBusesActual) {
         try {
