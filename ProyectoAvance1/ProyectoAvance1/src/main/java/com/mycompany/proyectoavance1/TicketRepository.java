@@ -28,7 +28,7 @@ public class TicketRepository {
  * @return una lista enlazada con los tickets cargados, o una lista vacía
  * si el archivo no existe o no se puede leer.
  */
-     public ListaTickets cargarTickets() {
+    public ListaTickets cargarTickets() {
         try {
             Gson gson = new Gson();
             FileReader lectorArchivo = new FileReader(ruta);
@@ -38,7 +38,7 @@ public class TicketRepository {
             if (listaLeida != null) {
                 return listaLeida;
             }
-        } catch (Exception e) {
+        } catch (Exception excepcion) {
         }
 
         return new ListaTickets();
@@ -91,7 +91,7 @@ public class TicketRepository {
             escritorArchivo.flush();
             escritorArchivo.close();
             return true;
-        } catch (Exception e) {
+        } catch (Exception excepcion) {
             return false;
         }
     }

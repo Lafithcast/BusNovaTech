@@ -14,8 +14,8 @@ import java.time.format.DateTimeFormatter;
 public class Ticket {
     
     public static String obtenerFecha() {
-    return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-}
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+    }
 
     private String nombre;
     private int id;
@@ -105,7 +105,7 @@ public class Ticket {
     }
 
     public int getId() { 
-               return id;
+        return id;
     }
 
     public String getNombre() {
