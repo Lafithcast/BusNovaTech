@@ -44,6 +44,16 @@ public class TicketRepository {
         return new ListaTickets();
     }
 
+    /**
+     * Agrega un nuevo ticket al repositorio.
+     * <p>
+     * El método verifica que el ticket no sea nulo antes de agregarlo.
+     * Si el objeto proporcionado es {@code null}, la operación se ignora.
+     * Después de agregarlo, guarda automáticamente la lista actualizada en el archivo.
+     * </p>
+     * 
+     * @param ticket El objeto {@link Ticket} que se desea agregar
+     */
     public void agregarTicket(Ticket ticket) {
         if (ticket == null) {
             return;
@@ -53,6 +63,16 @@ public class TicketRepository {
         guardarListaCompleta();
     }
 
+    /**
+     * Actualiza un ticket existente en el repositorio.
+     * <p>
+     * Busca el ticket por su ID y fecha de compra. Si lo encuentra,
+     * lo reemplaza en la cache. Si no lo encuentra, lo agrega como nuevo.
+     * Después, guarda los cambios en el archivo.
+     * </p>
+     * 
+     * @param actualizado El ticket con los datos actualizados
+     */
     public void actualizarTicket(Ticket actualizado) {
         if (actualizado == null) {
             return;
