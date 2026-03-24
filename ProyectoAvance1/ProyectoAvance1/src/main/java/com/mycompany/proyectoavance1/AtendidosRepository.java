@@ -31,7 +31,7 @@ public class AtendidosRepository {
             if (listaLeida != null) {
                 return listaLeida;
             }
-        } catch (Exception e) {
+        } catch (Exception exception) {
         }
 
         return new ListaTickets();
@@ -58,7 +58,7 @@ public class AtendidosRepository {
             escritorArchivo.flush();
             escritorArchivo.close();
             return true;
-        } catch (Exception e) {
+        } catch (Exception exception) {
             return false;
         }
     }
