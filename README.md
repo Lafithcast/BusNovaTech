@@ -36,4 +36,5 @@ Implementar un sistema que simule la gestión de transporte, aplicando estructur
 - Lafith Castrillo Hernandez
 - Nicolas Peñas Mora
 - Maria Fernanda Herrera Alfaro
-- Fabiana 
+- Fabiana Gonzalez segura 
+
