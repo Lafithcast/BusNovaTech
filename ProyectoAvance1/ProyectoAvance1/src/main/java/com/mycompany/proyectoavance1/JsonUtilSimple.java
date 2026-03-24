@@ -14,6 +14,15 @@ import java.io.FileWriter;
 
 public class JsonUtilSimple {
 
+    /**
+     * Lee el contenido completo de un archivo.
+     * <p>
+     * Abre el archivo ubicado en la ruta indicada y retorna todo su contenido
+     * como una cadena de texto. Si ocurre algún error, retorna {@code null}.
+     * </p>
+     * @param ruta La ubicación del archivo que se desea leer
+     * @return El contenido del archivo como cadena de texto o {@code null} si no se pudo leer
+     */
     public static String leerArchivo(String ruta) {
         BufferedReader br = null;
         try {
@@ -31,6 +40,16 @@ public class JsonUtilSimple {
         }
     }
 
+    /**
+     * Escribe contenido en un archivo.
+     * <p>
+     * Crea el archivo en la ruta indicada.
+     * Si ocurre algún error durante la escritura, retorna {@code false}.
+     * </p>
+     * @param ruta La ubicación donde se guardará el archivo
+     * @param contenido El texto que se escribirá en el archivo
+     * @return {@code true} si la escritura fue exitosa, {@code false} si ocurrió algún error
+     */
     public static boolean escribirArchivo(String ruta, String contenido) {
         FileWriter fw = null;
         try {
@@ -44,6 +63,16 @@ public class JsonUtilSimple {
         }
     }
 
+    /**
+     * Escapa caracteres especiales en un texto para usarlo dentro de JSON.
+     * <p>
+     * Reemplaza las barras invertidas y las comillas dobles con sus
+     * versiones escapadas para que el texto pueda incluirse en un JSON.
+     * Si el texto es {@code null}, retorna una cadena vacía.
+     * </p>
+     * @param texto El texto que se desea escapar
+     * @return El texto con los caracteres especiales escapados
+     */
     public static String escape(String texto) {
         if (texto == null) return "";
         texto = texto.replace("\\", "\\\\");
@@ -51,6 +80,16 @@ public class JsonUtilSimple {
         return texto;
     }
 
+    /**
+     * Desescapa caracteres especiales de un texto proveniente de JSON.
+     * <p>
+     * Restaura las comillas dobles y barras invertidas que fueron escapadas
+     * en un JSON a su forma original.
+     * Si el texto es {@code null}, retorna una cadena vacía.
+     * </p>
+     * @param texto El texto que se desea desescapar
+     * @return El texto con los caracteres restaurados
+     */
     public static String unescape(String texto) {
         if (texto == null) return "";
         texto = texto.replace("\\\"", "\"");
@@ -58,6 +97,13 @@ public class JsonUtilSimple {
         return texto;
     }
 
+    /**
+     * Extrae el valor de una clave de tipo texto desde una cadena JSON.
+     * Busca la clave especificada en el JSON y retorna su valor como texto.
+     * @param json La cadena en formato JSON donde se buscará la clave
+     * @param key El nombre de la clave cuyo valor se desea obtener
+     * @return El valor asociado a la clave, o {@code null} si no se encuentra
+     */
     public static String extraerString(String json, String key) {
         try {
             String patron = "\"" + key + "\"";
@@ -83,6 +129,19 @@ public class JsonUtilSimple {
         }
     }
 
+    /**
+     * Extrae el valor de una clave de tipo número desde una cadena JSON.
+     * <p>
+     * Busca la clave especificada en el JSON y retorna su valor como entero.
+     * Si la clave no existe o el valor no es un número válido,
+     * retorna el valor de respaldo.
+     * </p>
+     * 
+     * @param json La cadena en formato JSON donde se buscará la clave
+     * @param key El nombre de la clave cuyo valor se desea obtener
+     * @param fallback El valor que se retorna si no se puede extraer el número
+     * @return El valor numérico asociado a la clave, o el valor de respaldo en caso de error
+     */
     public static int extraerInt(String json, String key, int fallback) {
         try {
             String patron = "\"" + key + "\"";
