@@ -34,5 +34,5 @@ Implementar un sistema que simule la gestión de transporte, aplicando estructur
 ## Integrantes
 - Allison Alvarado Sibaja
 - Lafith
-- Nyko
+- Nicolas Peñas Mora
 - Fabiana
