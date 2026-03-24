@@ -89,6 +89,13 @@ public class Ticket {
         }
     }
 
+    /**
+     * Marca la atención del ticket.
+     * @param terminalCompra Terminal donde se realizó la compra
+     * @param numeroBusAbordado Número del bus que atendió al cliente
+     * @param montoCobrado Monto cobrado por el servicio
+     * @param pagado {@code true} si el cliente pagó, {@code false} en caso contrario
+     */
     public void marcarEnAtencion() {
         estadoTicket = "En Atencion";
     }
