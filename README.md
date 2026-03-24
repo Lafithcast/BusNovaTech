@@ -33,6 +33,7 @@ Implementar un sistema que simule la gestión de transporte, aplicando estructur
 
 ## Integrantes
 - Allison Alvarado Sibaja
-- Lafith
+- Lafith Castrillo Hernandez
 - Nicolas Peñas Mora
-- Fabiana
+- Maria Fernanda Herrera Alfaro
+- Fabiana 
