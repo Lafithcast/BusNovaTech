@@ -15,6 +15,7 @@ public class Persistence {
     private AtendidosRepository atendidosRepository;
     private ColaRepository colaRepository;
     private BusesRepository busesRepository;
+    private GrafoRepository grafoRepository;
 
     /**
      * Constructor
@@ -26,6 +27,7 @@ public class Persistence {
         atendidosRepository = new AtendidosRepository("atendidos.json");
         colaRepository = new ColaRepository("colas.json");
         busesRepository = new BusesRepository("buses.json");
+        grafoRepository = new GrafoRepository("grafo.json");
     }
 
     public ConfigRepository getConfigRepository() {
@@ -46,4 +48,7 @@ public class Persistence {
     public BusesRepository getBusesRepository() {
         return busesRepository;
     }
+     public GrafoRepository getGrafoRepository() {
+        return grafoRepository;
+     }
 }
