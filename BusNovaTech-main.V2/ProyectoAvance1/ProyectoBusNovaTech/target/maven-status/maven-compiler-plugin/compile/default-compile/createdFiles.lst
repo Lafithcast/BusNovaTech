@@ -15,6 +15,7 @@ com\mycompany\proyectoavance1\ListaTickets.class
 com\mycompany\proyectoavance1\Persistence.class
 com\mycompany\proyectoavance1\JsonUtilSimple.class
 com\mycompany\proyectoavance1\NodoBus.class
+com\mycompany\proyectoavance1\ConsultaBCCR.class
 com\mycompany\proyectoavance1\NodoTicketRepo.class
 com\mycompany\proyectoavance1\ListaUsuarios.class
 com\mycompany\proyectoavance1\GrafoBuses.class

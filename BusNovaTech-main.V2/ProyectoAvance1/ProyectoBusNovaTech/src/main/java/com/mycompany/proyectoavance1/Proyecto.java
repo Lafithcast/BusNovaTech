@@ -162,8 +162,7 @@ public class Proyecto {
     /**
      * Solicita al usuario que inicie sesión.
      * Permite 3 intentos.
-     *      
-     *  
+     *
      * @return {@code true} si el login fue exitoso, {@code false} si se superaron los intentos
      */
     private boolean login() {
@@ -198,6 +197,7 @@ public class Proyecto {
                     + "6) Eliminar Buses\n"
                     + "7) Ver tickets atendidos\n"
                     + "8) Servicios Complementarios\n"
+                    + "9) Consulta Tipo de Cambio BCCR\n"
                     + "0) Salir\n\n"
                     + "Opcion:"
             );
@@ -223,9 +223,12 @@ public class Proyecto {
                 eliminarBuses();
             } else if (opcionMenu == 7) {
                 verAtendidos();
-            } else if (opcionMenu == 8) {       
-                
+            } else if (opcionMenu == 8) {
                 menuGrafo();
+                
+                
+            } else if (opcionMenu == 9) {
+                menuBCCR();
             } else if (opcionMenu == 0) {
                 salirGuardando();
                 return;
@@ -348,7 +351,7 @@ public class Proyecto {
      * <p>
      * Solicita el número de bus, verifica si hay ticket en fila,
      * muestra el monto a pagar, registra el pago y marca el ticket como atendido.
-     * Si el cliente paga, el ticket pasa a atendidos.json.
+     * Si el cliente pasa a atendidos.json.
      * </p>
      */
     private void llamarSiguiente() {
@@ -451,10 +454,6 @@ public class Proyecto {
 
     /**
      * Agrega un nuevo usuario al sistema.
-     * <p>
-     * Solicita nombre de usuario y contraseña, verifica que no exista
-     * y guarda los cambios en config.json.
-     * </p>
      */
     private void agregarUsuario() {
         String usuario = entrada.leerTextoNoVacio("Agregar Usuario\nUsuario:");
@@ -472,9 +471,6 @@ public class Proyecto {
 
     /**
      * Agrega nuevos buses al sistema.
-     * <p>
-     * Solicita la cantidad de buses a agregar, los crea y actualiza la configuración en config.json.
-     * </p>
      */
     private void agregarBuses() {
         int cantidadActual = config.getCantidadBuses();
@@ -514,11 +510,6 @@ public class Proyecto {
 
     /**
      * Elimina buses del sistema.
-     * <p>
-     * Solo permite eliminar hasta dejar un mínimo de 3 buses.
-     * No elimina buses que tengan tickets pendientes.
-     * Actualiza la configuración en config.json.
-     * </p>
      */
     private void eliminarBuses() {
         int cantidadActual = config.getCantidadBuses();
@@ -591,7 +582,6 @@ public class Proyecto {
 
     /**
      * Muestra la lista de tickets atendidos.
-     * Carga los tickets desde atendidos.json y los muestra.
      */
     private void verAtendidos() {
         ListaTickets listaAtendidos = persistence.getAtendidosRepository().obtenerAtendidos();
@@ -616,7 +606,6 @@ public class Proyecto {
 
         javax.swing.JOptionPane.showMessageDialog(null, mensaje);
     }
-    //menu para el grafo
     private void menuGrafo() {
         while (true) {
             String opStr = javax.swing.JOptionPane.showInputDialog(
@@ -651,7 +640,6 @@ public class Proyecto {
         }
     }
 
-    //Muestra el grafo completo: localidades y rutas con pesos.
     private void verGrafo() {
         if (grafo == null || grafo.estaVacio()) {
             javax.swing.JOptionPane.showMessageDialog(null,
@@ -662,7 +650,6 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null, grafo.imprimirGrafo());
     }
 
-    //Solicita origen y destino al usuario y muestra la ruta mas corta (Dijkstra)
     private void buscarRutaMasCorta() {
         if (grafo == null || grafo.estaVacio()) {
             javax.swing.JOptionPane.showMessageDialog(null,
@@ -691,7 +678,6 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null, resultado);
     }
 
-    //agrega nueva localidad
     private void agregarLocalidad() {
         String nombre = entrada.leerTextoNoVacio("Agregar Localidad\nNombre de la localidad:");
 
@@ -707,7 +693,7 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null,
                 "Localidad '" + nombre + "' agregada y guardada en grafo.json.");
     }
-    
+
     private void agregarRuta() {
         if (grafo == null || grafo.getCantidadLocalidades() < 2) {
             javax.swing.JOptionPane.showMessageDialog(null,
@@ -749,5 +735,47 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null,
                 "Ruta agregada: " + origen + " --> " + destino
                 + " (peso: " + peso + ")\nGuardada en grafo.json.");
+    }
+
+    //Submenú de Consulta BCCR. 
+    private void menuBCCR() {
+        String opStr = javax.swing.JOptionPane.showInputDialog(
+                "CONSULTA TIPO DE CAMBIO - BCCR\n"
+                + "1) Consultar en linea (requiere correo y token BCCR)\n"
+                + "2) Ver tipo de cambio predeterminado\n"
+                + "0) Volver\n\n"
+                + "Opcion:"
+        );
+
+        if (opStr == null) {
+            return;
+        }
+
+        int opcion = entrada.parseEnteroSeguro(opStr, -1);
+        ConsultaBCCR bccr = new ConsultaBCCR();
+
+        if (opcion == 1) {
+            consultarBCCREnLinea(bccr);
+        } else if (opcion == 2) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    bccr.consultarPredeterminado());
+        } else if (opcion == 0) {
+            return;
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(null, "Opcion invalida.");
+        }
+    }
+
+    //Si la consulta falla, muestra los valores predeterminados automáticamente.
+    private void consultarBCCREnLinea(ConsultaBCCR bccr) {
+        String correo = entrada.leerTextoNoVacio(
+                "Consulta BCCR en linea\nIngrese su correo registrado en el BCCR:");
+        String token = entrada.leerTextoNoVacio(
+                "Consulta BCCR en linea\nIngrese su token BCCR:");
+
+        javax.swing.JOptionPane.showMessageDialog(null, "Consultando al BCCR...\nEspere un momento.");
+
+        String resultado = bccr.consultarEnLinea(correo, token);
+        javax.swing.JOptionPane.showMessageDialog(null, resultado);
     }
 }
