@@ -418,7 +418,11 @@ public class Proyecto {
     }
 
     /**
-     * Muestra el estado actual de todos los buses.
+     * Muestra el estado de todos los buses.
+     * <p>
+     * Indica qué bus está atendiendo, cuántos tickets
+     * tiene en fila y su tipo.
+     * </p>
      */
     private void verEstado() {
         if (listaBuses == null || listaBuses.estaVacia()) {
@@ -510,6 +514,9 @@ public class Proyecto {
 
     /**
      * Elimina buses del sistema.
+     * <p>
+     * Solo elimina buses que estén vacíos.
+     * </p>
      */
     private void eliminarBuses() {
         int cantidadActual = config.getCantidadBuses();
@@ -606,6 +613,14 @@ public class Proyecto {
 
         javax.swing.JOptionPane.showMessageDialog(null, mensaje);
     }
+
+    /**
+     * Menú de servicios relacionados con rutas.
+     * <p>
+     * Permite ver el grafo, agregar localidades
+     * y buscar rutas.
+     * </p>
+     */
     private void menuGrafo() {
         while (true) {
             String opStr = javax.swing.JOptionPane.showInputDialog(
@@ -640,6 +655,9 @@ public class Proyecto {
         }
     }
 
+    /**
+     * Muestra el grafo de rutas.
+     */
     private void verGrafo() {
         if (grafo == null || grafo.estaVacio()) {
             javax.swing.JOptionPane.showMessageDialog(null,
@@ -650,6 +668,9 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null, grafo.imprimirGrafo());
     }
 
+    /**
+     * Busca la ruta más corta entre dos localidades.
+     */
     private void buscarRutaMasCorta() {
         if (grafo == null || grafo.estaVacio()) {
             javax.swing.JOptionPane.showMessageDialog(null,
@@ -678,6 +699,9 @@ public class Proyecto {
         javax.swing.JOptionPane.showMessageDialog(null, resultado);
     }
 
+    /**
+     * Agrega una nueva localidad al grafo.
+     */
     private void agregarLocalidad() {
         String nombre = entrada.leerTextoNoVacio("Agregar Localidad\nNombre de la localidad:");
 
@@ -694,6 +718,9 @@ public class Proyecto {
                 "Localidad '" + nombre + "' agregada y guardada en grafo.json.");
     }
 
+    /**
+     * Agrega una ruta entre dos localidades.
+     */
     private void agregarRuta() {
         if (grafo == null || grafo.getCantidadLocalidades() < 2) {
             javax.swing.JOptionPane.showMessageDialog(null,
@@ -737,7 +764,9 @@ public class Proyecto {
                 + " (peso: " + peso + ")\nGuardada en grafo.json.");
     }
 
-    //Submenú de Consulta BCCR. 
+    /**
+     * Submenú para consultar el tipo de cambio del BCCR.
+     */ 
     private void menuBCCR() {
         String opStr = javax.swing.JOptionPane.showInputDialog(
                 "CONSULTA TIPO DE CAMBIO - BCCR\n"
@@ -766,7 +795,11 @@ public class Proyecto {
         }
     }
 
-    //Si la consulta falla, muestra los valores predeterminados automáticamente.
+    /**
+     * Realiza la consulta en línea al BCCR.
+     * Si la consulta falla, muestra los valores predeterminados automáticamente.
+     *
+     */
     private void consultarBCCREnLinea(ConsultaBCCR bccr) {
         String correo = entrada.leerTextoNoVacio(
                 "Consulta BCCR en linea\nIngrese su correo registrado en el BCCR:");
