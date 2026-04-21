@@ -83,11 +83,65 @@
               "numeroBusAbordado": 3,
               "montoCobrado": 3000.0,
               "pagado": true
+            },
+            "siguiente": {
+              "valor": {
+                "nombre": "Quito",
+                "id": 45,
+                "edad": 13,
+                "monedaCuenta": "COLONES",
+                "horaCompra": "06/04/2026 10:41:58",
+                "fechaHoraAbordaje": "21/04/2026 00:32:39",
+                "servicio": "REGULAR",
+                "tipoBus": "N",
+                "estadoTicket": "Atendido",
+                "fechaHoraAtencion": "21/04/2026 00:32:39",
+                "terminalCompra": "BusNovaTech",
+                "numeroBusAbordado": 4,
+                "montoCobrado": 3000.0,
+                "pagado": true
+              },
+              "siguiente": {
+                "valor": {
+                  "nombre": "No deberia seguir este",
+                  "id": 10,
+                  "edad": 99,
+                  "monedaCuenta": "COLONES",
+                  "horaCompra": "06/04/2026 10:45:41",
+                  "fechaHoraAbordaje": "21/04/2026 00:33:04",
+                  "servicio": "REGULAR",
+                  "tipoBus": "N",
+                  "estadoTicket": "Atendido",
+                  "fechaHoraAtencion": "21/04/2026 00:33:04",
+                  "terminalCompra": "BusNovaTech",
+                  "numeroBusAbordado": 3,
+                  "montoCobrado": 3000.0,
+                  "pagado": true
+                },
+                "siguiente": {
+                  "valor": {
+                    "nombre": "Luci",
+                    "id": 91,
+                    "edad": 15,
+                    "monedaCuenta": "COLONES",
+                    "horaCompra": "06/04/2026 10:44:25",
+                    "fechaHoraAbordaje": "21/04/2026 00:33:17",
+                    "servicio": "REGULAR",
+                    "tipoBus": "N",
+                    "estadoTicket": "Atendido",
+                    "fechaHoraAtencion": "21/04/2026 00:33:17",
+                    "terminalCompra": "BusNovaTech",
+                    "numeroBusAbordado": 4,
+                    "montoCobrado": 3000.0,
+                    "pagado": true
+                  }
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "tamano": 5
+  "tamano": 8
 }

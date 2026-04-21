@@ -74,15 +74,15 @@
               "edad": 13,
               "monedaCuenta": "COLONES",
               "horaCompra": "06/04/2026 10:41:58",
-              "fechaHoraAbordaje": "NA",
+              "fechaHoraAbordaje": "21/04/2026 00:32:39",
               "servicio": "REGULAR",
               "tipoBus": "N",
-              "estadoTicket": "En Atencion",
-              "fechaHoraAtencion": "NA",
+              "estadoTicket": "Atendido",
+              "fechaHoraAtencion": "21/04/2026 00:32:39",
               "terminalCompra": "BusNovaTech",
-              "numeroBusAbordado": 0,
-              "montoCobrado": 0.0,
-              "pagado": false
+              "numeroBusAbordado": 4,
+              "montoCobrado": 3000.0,
+              "pagado": true
             },
             "siguiente": {
               "valor": {
@@ -125,15 +125,15 @@
                     "edad": 15,
                     "monedaCuenta": "COLONES",
                     "horaCompra": "06/04/2026 10:44:25",
-                    "fechaHoraAbordaje": "NA",
+                    "fechaHoraAbordaje": "21/04/2026 00:33:17",
                     "servicio": "REGULAR",
                     "tipoBus": "N",
-                    "estadoTicket": "Pendiente",
-                    "fechaHoraAtencion": "NA",
+                    "estadoTicket": "Atendido",
+                    "fechaHoraAtencion": "21/04/2026 00:33:17",
                     "terminalCompra": "BusNovaTech",
-                    "numeroBusAbordado": 0,
-                    "montoCobrado": 0.0,
-                    "pagado": false
+                    "numeroBusAbordado": 4,
+                    "montoCobrado": 3000.0,
+                    "pagado": true
                   },
                   "siguiente": {
                     "valor": {
@@ -142,15 +142,33 @@
                       "edad": 99,
                       "monedaCuenta": "COLONES",
                       "horaCompra": "06/04/2026 10:45:41",
-                      "fechaHoraAbordaje": "NA",
+                      "fechaHoraAbordaje": "21/04/2026 00:33:04",
                       "servicio": "REGULAR",
                       "tipoBus": "N",
-                      "estadoTicket": "Pendiente",
-                      "fechaHoraAtencion": "NA",
+                      "estadoTicket": "Atendido",
+                      "fechaHoraAtencion": "21/04/2026 00:33:04",
                       "terminalCompra": "BusNovaTech",
-                      "numeroBusAbordado": 0,
-                      "montoCobrado": 0.0,
-                      "pagado": false
+                      "numeroBusAbordado": 3,
+                      "montoCobrado": 3000.0,
+                      "pagado": true
+                    },
+                    "siguiente": {
+                      "valor": {
+                        "nombre": "Beto",
+                        "id": 7,
+                        "edad": 26,
+                        "monedaCuenta": "DOLARES",
+                        "horaCompra": "21/04/2026 00:33:55",
+                        "fechaHoraAbordaje": "NA",
+                        "servicio": "REGULAR",
+                        "tipoBus": "N",
+                        "estadoTicket": "En Atencion",
+                        "fechaHoraAtencion": "NA",
+                        "terminalCompra": "BusNovaTech",
+                        "numeroBusAbordado": 0,
+                        "montoCobrado": 0.0,
+                        "pagado": false
+                      }
                     }
                   }
                 }
@@ -161,5 +179,5 @@
       }
     }
   },
-  "tamano": 9
+  "tamano": 10
 }
