@@ -21,6 +21,12 @@ public class GrafoRepository {
         return grafo;
     }
 
+     /**
+     * Guarda el grafo en el archivo.
+     * 
+     * @param grafo Grafo a guardar
+     * @return {@code true} si se guardó correctamente
+     */
     public boolean guardar(GrafoBuses grafo) {
         if (grafo != null) {
             cacheGrafo = grafo;
@@ -34,6 +40,11 @@ public class GrafoRepository {
         return JsonUtilSimple.escribirArchivo(ruta, json);
     }
 
+    /**
+     * Obtiene el grafo en memoria.
+     * 
+     * @return Grafo actual
+     */
     public GrafoBuses obtenerGrafo() {
         return cacheGrafo;
     }
