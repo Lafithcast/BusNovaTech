@@ -144,7 +144,7 @@ public class Bus {
      * @return Una cadena de texto con la información resumida del bus
      */
     public String resumenBus() {
-        String texto = "Bus #" + numeroBus + " | Tipo=" + tipoBus;
+        String texto = "Bus # " + numeroBus + " | Tipo= " + tipoBus;
 
         if (inspectorOcupado && ticketEnAtencion != null) {
             texto += " | En atencion: " + ticketEnAtencion.getNombre();

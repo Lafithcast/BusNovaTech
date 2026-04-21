@@ -101,14 +101,14 @@ public class Ticket {
     }
 
     public String resumen() {
-        return "Nombre=" + nombre +
-                " | ID=" + id +
-                " | Edad=" + edad +
-                " | Moneda=" + monedaCuenta +
-                " | Compra=" + horaCompra +
-                " | Abordaje=" + fechaHoraAbordaje +
-                " | Servicio=" + servicio +
-                " | TipoBus=" + tipoBus;
+        return "Nombre = " + nombre +
+                " \nID = " + id +
+                " \nEdad = " + edad +
+                " \nMoneda = " + monedaCuenta +
+                " \nCompra = " + horaCompra +
+                " \nAbordaje = " + fechaHoraAbordaje +
+                " \nServicio = " + servicio +
+                " \nTipoBus = " + tipoBus;
     }
 
     public int getId() { 

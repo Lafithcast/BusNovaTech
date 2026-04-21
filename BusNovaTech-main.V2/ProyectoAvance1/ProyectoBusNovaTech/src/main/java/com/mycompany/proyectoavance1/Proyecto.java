@@ -14,6 +14,7 @@ public class Proyecto {
     private ListaBuses listaBuses;
     private InputJOP entrada;
     private Persistence persistence;
+    private GrafoBuses grafo;
 
     /**
      * Constructor del sistema.
@@ -27,6 +28,7 @@ public class Proyecto {
         entrada = new InputJOP();
         persistence = new Persistence();
         config = null;
+        grafo = null;          
     }
 
     /**
@@ -37,70 +39,69 @@ public class Proyecto {
      * </p>
      */
     private void inicializarBuses() {
-    ListaBuses busesGuardados = persistence.getBusesRepository().cargarBuses();
+        ListaBuses busesGuardados = persistence.getBusesRepository().cargarBuses();
 
-    if (busesGuardados != null && !busesGuardados.estaVacia()) {
-        listaBuses = busesGuardados;
-        return;
-    }
-
-    listaBuses = new ListaBuses();
-
-    int numeroBus = 1;
-    while (numeroBus <= config.getCantidadBuses()) {
-        char tipoBus = 'N';
-
-        if (numeroBus == 1) {
-            tipoBus = 'P';
-        } else if (numeroBus == 2) {
-            tipoBus = 'D';
+        if (busesGuardados != null && !busesGuardados.estaVacia()) {
+            listaBuses = busesGuardados;
+            return;
         }
 
-        Bus nuevoBus = new Bus(numeroBus, tipoBus);
-        listaBuses.agregarBus(nuevoBus);
-        numeroBus++;
-    }
+        listaBuses = new ListaBuses();
 
-    persistence.getBusesRepository().guardarBuses(listaBuses);
+        int numeroBus = 1;
+        while (numeroBus <= config.getCantidadBuses()) {
+            char tipoBus = 'N';
+
+            if (numeroBus == 1) {
+                tipoBus = 'P';
+            } else if (numeroBus == 2) {
+                tipoBus = 'D';
+            }
+
+            Bus nuevoBus = new Bus(numeroBus, tipoBus);
+            listaBuses.agregarBus(nuevoBus);
+            numeroBus++;
+        }
+
+        persistence.getBusesRepository().guardarBuses(listaBuses);
     }
-    
 
     /**
      * Busca un bus disponible según el tipo solicitado.
-     * 
+     *
      * @param tipoBus Tipo de bus a buscar ('P', 'D' o 'N')
      * @return El primer bus del tipo especificado, o {@code null} si no hay
      */
     private Bus buscarBusDisponiblePorTipo(char tipoBus) {
-    Bus mejorBus = null;
-    int menorCantidadEnFila = -1;
-    int posicionActual = 0;
+        Bus mejorBus = null;
+        int menorCantidadEnFila = -1;
+        int posicionActual = 0;
 
-    while (posicionActual < listaBuses.tamano()) {
-        Bus busActual = listaBuses.obtenerBusEnPosicion(posicionActual);
+        while (posicionActual < listaBuses.tamano()) {
+            Bus busActual = listaBuses.obtenerBusEnPosicion(posicionActual);
 
-        if (busActual != null && busActual.getTipoBus() == tipoBus) {
-            if (busActual.estaLibre() && busActual.getFilaEspera().estaVacia()) {
-                return busActual;
+            if (busActual != null && busActual.getTipoBus() == tipoBus) {
+                if (busActual.estaLibre() && busActual.getFilaEspera().estaVacia()) {
+                    return busActual;
+                }
+
+                int cantidadActualEnFila = busActual.cantidadEnFila();
+
+                if (mejorBus == null || cantidadActualEnFila < menorCantidadEnFila) {
+                    mejorBus = busActual;
+                    menorCantidadEnFila = cantidadActualEnFila;
+                }
             }
 
-            int cantidadActualEnFila = busActual.cantidadEnFila();
-
-            if (mejorBus == null || cantidadActualEnFila < menorCantidadEnFila) {
-                mejorBus = busActual;
-                menorCantidadEnFila = cantidadActualEnFila;
-            }
+            posicionActual++;
         }
 
-        posicionActual++;
+        return mejorBus;
     }
 
-    return mejorBus;
-}
-
-private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
-    return buscarBusDisponiblePorTipo(tipoBusSolicitado);
-}
+    private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
+        return buscarBusDisponiblePorTipo(tipoBusSolicitado);
+    }
 
     /**
      * Inicia el sistema.
@@ -113,7 +114,6 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
     public void iniciar() {
         javax.swing.JOptionPane.showMessageDialog(null, "Bienvenido al Sistema");
 
-        //config.json
         config = persistence.getConfigRepository().cargar();
         if (config == null) {
             javax.swing.JOptionPane.showMessageDialog(null, "config.json no existe o esta dañado.");
@@ -121,8 +121,13 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
             configurarDesdeCero();
             persistence.getConfigRepository().guardar(config);
         }
-        
+
         inicializarBuses();
+
+        grafo = persistence.getGrafoRepository().cargar();
+        if (grafo == null) {
+            grafo = new GrafoBuses();
+        }
 
         if (!login()) {
             javax.swing.JOptionPane.showMessageDialog(null, "Demasiados intentos. saliendo.");
@@ -157,6 +162,7 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
     /**
      * Solicita al usuario que inicie sesión.
      * Permite 3 intentos.
+     *
      * @return {@code true} si el login fue exitoso, {@code false} si se superaron los intentos
      */
     private boolean login() {
@@ -190,6 +196,8 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
                     + "5) Agregar Buses\n"
                     + "6) Eliminar Buses\n"
                     + "7) Ver tickets atendidos\n"
+                    + "8) Servicios Complementarios\n"
+                    + "9) Consulta Tipo de Cambio BCCR\n"
                     + "0) Salir\n\n"
                     + "Opcion:"
             );
@@ -215,6 +223,12 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
                 eliminarBuses();
             } else if (opcionMenu == 7) {
                 verAtendidos();
+            } else if (opcionMenu == 8) {
+                menuGrafo();
+                
+                
+            } else if (opcionMenu == 9) {
+                menuBCCR();
             } else if (opcionMenu == 0) {
                 salirGuardando();
                 return;
@@ -337,7 +351,7 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
      * <p>
      * Solicita el número de bus, verifica si hay ticket en fila,
      * muestra el monto a pagar, registra el pago y marca el ticket como atendido.
-     * Si el cliente paga, el ticket pasa a atendidos.json.
+     * Si el cliente pasa a atendidos.json.
      * </p>
      */
     private void llamarSiguiente() {
@@ -404,7 +418,11 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
     }
 
     /**
-     * Muestra el estado actual de todos los buses.
+     * Muestra el estado de todos los buses.
+     * <p>
+     * Indica qué bus está atendiendo, cuántos tickets
+     * tiene en fila y su tipo.
+     * </p>
      */
     private void verEstado() {
         if (listaBuses == null || listaBuses.estaVacia()) {
@@ -440,10 +458,6 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
 
     /**
      * Agrega un nuevo usuario al sistema.
-     * <p>
-     * Solicita nombre de usuario y contraseña, verifica que no exista
-     * y guarda los cambios en config.json.
-     * </p>
      */
     private void agregarUsuario() {
         String usuario = entrada.leerTextoNoVacio("Agregar Usuario\nUsuario:");
@@ -454,7 +468,6 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
         String contrasena = entrada.leerTextoNoVacio("Agregar Usuario\nContraseña:");
         config.agregarUsuario(usuario, contrasena);
 
-        //guardar config.json
         persistence.getConfigRepository().guardar(config);
 
         javax.swing.JOptionPane.showMessageDialog(null, "Usuario agregado y guardado en config.json.");
@@ -462,9 +475,6 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
 
     /**
      * Agrega nuevos buses al sistema.
-     * <p>
-     * Solicita la cantidad de buses a agregar, los crea y actualiza la configuración en config.json.
-     * </p>
      */
     private void agregarBuses() {
         int cantidadActual = config.getCantidadBuses();
@@ -505,9 +515,7 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
     /**
      * Elimina buses del sistema.
      * <p>
-     * Solo permite eliminar hasta dejar un mínimo de 3 buses.
-     * No elimina buses que tengan tickets pendientes.
-     * Actualiza la configuración en config.json.
+     * Solo elimina buses que estén vacíos.
      * </p>
      */
     private void eliminarBuses() {
@@ -574,13 +582,13 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
         persistence.getTicketRepository().guardarListaCompleta();
         persistence.getAtendidosRepository().guardarListaCompleta();
         persistence.getBusesRepository().guardarBuses(listaBuses);
-        
+        persistence.getGrafoRepository().guardar(grafo);
+
         javax.swing.JOptionPane.showMessageDialog(null, "Guardado en JSON. Saliendo...");
     }
 
     /**
      * Muestra la lista de tickets atendidos.
-     * Carga los tickets desde atendidos.json y los muestra.
      */
     private void verAtendidos() {
         ListaTickets listaAtendidos = persistence.getAtendidosRepository().obtenerAtendidos();
@@ -604,5 +612,203 @@ private Bus buscarBusParaNuevoTicket(char tipoBusSolicitado) {
         }
 
         javax.swing.JOptionPane.showMessageDialog(null, mensaje);
+    }
+
+    /**
+     * Menú de servicios relacionados con rutas.
+     * <p>
+     * Permite ver el grafo, agregar localidades
+     * y buscar rutas.
+     * </p>
+     */
+    private void menuGrafo() {
+        while (true) {
+            String opStr = javax.swing.JOptionPane.showInputDialog(
+                    "SERVICIOS COMPLEMENTARIOS\n"
+                    + "1) Ver grafo de rutas\n"
+                    + "2) Buscar ruta mas corta\n"
+                    + "3) Agregar localidad\n"
+                    + "4) Agregar ruta entre localidades\n"
+                    + "0) Volver al menu principal\n\n"
+                    + "Opcion:"
+            );
+
+            if (opStr == null) {
+                return;
+            }
+
+            int opcion = entrada.parseEnteroSeguro(opStr, -1);
+
+            if (opcion == 1) {
+                verGrafo();
+            } else if (opcion == 2) {
+                buscarRutaMasCorta();
+            } else if (opcion == 3) {
+                agregarLocalidad();
+            } else if (opcion == 4) {
+                agregarRuta();
+            } else if (opcion == 0) {
+                return;
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(null, "Opcion invalida. Intente de nuevo.");
+            }
+        }
+    }
+
+    /**
+     * Muestra el grafo de rutas.
+     */
+    private void verGrafo() {
+        if (grafo == null || grafo.estaVacio()) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "El grafo no tiene localidades registradas.\n"
+                    + "Use la opcion 3 para agregar localidades.");
+            return;
+        }
+        javax.swing.JOptionPane.showMessageDialog(null, grafo.imprimirGrafo());
+    }
+
+    /**
+     * Busca la ruta más corta entre dos localidades.
+     */
+    private void buscarRutaMasCorta() {
+        if (grafo == null || grafo.estaVacio()) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "El grafo esta vacio. Agregue localidades primero.");
+            return;
+        }
+
+        javax.swing.JOptionPane.showMessageDialog(null,
+                "Localidades disponibles:\n" + grafo.listarLocalidades());
+
+        String origen = entrada.leerTextoNoVacio("Ruta mas corta\nLocalidad ORIGEN:");
+        if (!grafo.existeLocalidad(origen)) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "La localidad '" + origen + "' no existe en el grafo.");
+            return;
+        }
+
+        String destino = entrada.leerTextoNoVacio("Ruta mas corta\nLocalidad DESTINO:");
+        if (!grafo.existeLocalidad(destino)) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "La localidad '" + destino + "' no existe en el grafo.");
+            return;
+        }
+
+        String resultado = grafo.rutaMasCorta(origen, destino);
+        javax.swing.JOptionPane.showMessageDialog(null, resultado);
+    }
+
+    /**
+     * Agrega una nueva localidad al grafo.
+     */
+    private void agregarLocalidad() {
+        String nombre = entrada.leerTextoNoVacio("Agregar Localidad\nNombre de la localidad:");
+
+        if (grafo.existeLocalidad(nombre)) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "La localidad '" + nombre + "' ya existe.");
+            return;
+        }
+
+        grafo.agregarLocalidad(nombre);
+        persistence.getGrafoRepository().guardar(grafo);
+
+        javax.swing.JOptionPane.showMessageDialog(null,
+                "Localidad '" + nombre + "' agregada y guardada en grafo.json.");
+    }
+
+    /**
+     * Agrega una ruta entre dos localidades.
+     */
+    private void agregarRuta() {
+        if (grafo == null || grafo.getCantidadLocalidades() < 2) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "Se necesitan al menos 2 localidades para agregar una ruta.");
+            return;
+        }
+
+        javax.swing.JOptionPane.showMessageDialog(null,
+                "Localidades disponibles:\n" + grafo.listarLocalidades());
+
+        String origen = entrada.leerTextoNoVacio("Agregar Ruta\nLocalidad ORIGEN:");
+        if (!grafo.existeLocalidad(origen)) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "La localidad '" + origen + "' no existe.");
+            return;
+        }
+
+        String destino = entrada.leerTextoNoVacio("Agregar Ruta\nLocalidad DESTINO:");
+        if (!grafo.existeLocalidad(destino)) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "La localidad '" + destino + "' no existe.");
+            return;
+        }
+
+        if (origen.equalsIgnoreCase(destino)) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    "El origen y el destino no pueden ser la misma localidad.");
+            return;
+        }
+
+        int peso = entrada.leerEnteroRango(
+                "Agregar Ruta\nPeso/distancia de la ruta " + origen + " --> " + destino + ":",
+                1, 99999
+        );
+
+        grafo.agregarRuta(origen, destino, peso);
+        persistence.getGrafoRepository().guardar(grafo);
+
+        javax.swing.JOptionPane.showMessageDialog(null,
+                "Ruta agregada: " + origen + " --> " + destino
+                + " (peso: " + peso + ")\nGuardada en grafo.json.");
+    }
+
+    /**
+     * Submenú para consultar el tipo de cambio del BCCR.
+     */ 
+    private void menuBCCR() {
+        String opStr = javax.swing.JOptionPane.showInputDialog(
+                "CONSULTA TIPO DE CAMBIO - BCCR\n"
+                + "1) Consultar en linea (requiere correo y token BCCR)\n"
+                + "2) Ver tipo de cambio predeterminado\n"
+                + "0) Volver\n\n"
+                + "Opcion:"
+        );
+
+        if (opStr == null) {
+            return;
+        }
+
+        int opcion = entrada.parseEnteroSeguro(opStr, -1);
+        ConsultaBCCR bccr = new ConsultaBCCR();
+
+        if (opcion == 1) {
+            consultarBCCREnLinea(bccr);
+        } else if (opcion == 2) {
+            javax.swing.JOptionPane.showMessageDialog(null,
+                    bccr.consultarPredeterminado());
+        } else if (opcion == 0) {
+            return;
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(null, "Opcion invalida.");
+        }
+    }
+
+    /**
+     * Realiza la consulta en línea al BCCR.
+     * Si la consulta falla, muestra los valores predeterminados automáticamente.
+     *
+     */
+    private void consultarBCCREnLinea(ConsultaBCCR bccr) {
+        String correo = entrada.leerTextoNoVacio(
+                "Consulta BCCR en linea\nIngrese su correo registrado en el BCCR:");
+        String token = entrada.leerTextoNoVacio(
+                "Consulta BCCR en linea\nIngrese su token BCCR:");
+
+        javax.swing.JOptionPane.showMessageDialog(null, "Consultando al BCCR...\nEspere un momento.");
+
+        String resultado = bccr.consultarEnLinea(correo, token);
+        javax.swing.JOptionPane.showMessageDialog(null, resultado);
     }
 }
