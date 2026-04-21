@@ -1,9 +1,15 @@
 //Author = Nyko
 package com.mycompany.proyectoavance1;
 
-//Se guarda el nombre del destino, peso, referencias a la vez que crea una lista enlazada
-
-
+/**
+ * Representa una ruta entre localidades en el grafo.
+ * <p>
+ * Guarda el destino, el costo o distancia y una referencia
+ * al siguiente nodo.
+ * </p>
+ * 
+ * @author Nyko
+ */
 public class NodoArista {
     private String destino;
     private double peso;
