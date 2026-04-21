@@ -1,6 +1,15 @@
 //Author = Nyko
 package com.mycompany.proyectoavance1;
 
+/**
+ * Representa un usuario dentro del sistema.
+ * <p>
+ * Guarda el nombre de usuario, la contraseña y una referencia
+ * al siguiente nodo.
+ * </p>
+ * 
+ * @author Nyko
+ */
 public class NodoUsuario {
     private String nombreUsuario;
     private String contrasena;
