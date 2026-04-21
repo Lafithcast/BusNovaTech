@@ -7,23 +7,39 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-//cONSULTA BCCR
+/* CONSULTA BCCR */
 public class ConsultaBCCR {
 
-    //Indicadores BCCR
+    /** Indicador del tipo de cambio de compra */
     private static final int INDICADOR_COMPRA = 317;
+    
+    /** Indicador del tipo de cambio de venta */
     private static final int INDICADOR_VENTA  = 318;
 
-    //URL base del web service
+    /** URL del Web Service del BCCR */
     private static final String URL_WS =
             "https://gee.bccr.fi.cr/Indicadores/Suscripciones/WS/wsindicadoreseconomicos.asmx/ObtenerIndicadoresEconomicos";
 
-    //Valores predeterminados solo por si falla
+    /** Valor predeterminado de compra */
     private static final double COMPRA_DEFAULT = 452.59;
+
+    /** Valor predeterminado de venta */
     private static final double VENTA_DEFAULT  = 458.64;
+
+    /** Fecha predeterminada */
     private static final String FECHA_DEFAULT  = "19/04/2026";
 
-    //consulta el tipo de cambio
+     /**
+     * Se consulta en línea el tipo de cambio del dólar.
+     * <p>
+     * Realiza dos consultas al Web Service del BCCR (compra y venta)
+     * Si la consulta falla, se retorna un resultado con valores predeterminados.
+     * </p>
+     * 
+     * @param correo Correo registrado en el servicio del BCCR
+     * @param token Token de acceso al Web Service
+     * @return Texto con el tipo de cambio obtenido o valores predeterminados
+     */
     public String consultarEnLinea(String correo, String token) {
         try {
             String fecha = obtenerFechaHoy();
@@ -46,10 +62,32 @@ public class ConsultaBCCR {
         }
     }
 
+    /**
+     * Se obtiene el tipo de cambio utilizando valores predeterminados.
+     * <p>
+     * Este método se usa como respaldo cuando no se puede
+     * consultar el servicio en línea.
+     * </p>
+     * 
+     * @return Texto con valores predeterminados del tipo de cambio
+     */
     public String consultarPredeterminado() {
         return formatearFallback(null);
     }
 
+     /**
+     * Consulta un indicador específico del BCCR.
+     * <p>
+     * Realiza una petición HTTP al Web Service con los parámetros indicados
+     * y procesa la respuesta en formato XML.
+     * </p>
+     * 
+     * @param indicador Código del indicador
+     * @param fecha Fecha de consulta
+     * @param correo Correo registrado
+     * @param token Token de acceso
+     * @return Valor del indicador o -1 si ocurre un error
+     */
     private double consultarIndicador(int indicador, String fecha, String correo, String token) {
         try {
             String urlStr = URL_WS
@@ -91,7 +129,16 @@ public class ConsultaBCCR {
         }
     }
 
-    // la verdad funciono y asi quedo
+     /**
+     * Extrae el valor numérico desde la respuesta XML del BCCR.
+     * <p>
+     * Busca la etiqueta {@code <NUM_VALOR>} dentro del XML y convierte
+     * su contenido a tipo {@code double}.
+     * </p>
+     * 
+     * @param xml Respuesta en formato XML
+     * @return Valor numérico extraído o -1 si ocurre un error
+     */
     private double extraerValorXML(String xml) {
         try {
             String etiquetaAbrir = "<NUM_VALOR>";
@@ -119,7 +166,16 @@ public class ConsultaBCCR {
         return hoy.format(formato);
     }
 
- 
+
+    /**
+     * Genera un resultado con valores predeterminados.
+     * <p>
+     * Se utiliza cuando falla la consulta en línea.
+     * </p>
+     * 
+     * @param mensajeExtra Mensaje adicional 
+     * @return Texto con el tipo de cambio predeterminado
+     */
     private String formatearFallback(String mensajeExtra) {
         String resultado = "";
         if (mensajeExtra != null) {
