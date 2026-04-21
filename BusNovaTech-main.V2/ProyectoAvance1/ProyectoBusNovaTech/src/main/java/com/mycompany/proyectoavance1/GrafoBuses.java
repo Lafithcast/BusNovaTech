@@ -1,14 +1,27 @@
 //Author = Nyko
 package com.mycompany.proyectoavance1;
-public class GrafoBuses {private NodoVertices primeraLocalidad;
+public class GrafoBuses {
+
+    /** Primer nodo de localidades en el grafo */
+    private NodoVertices primeraLocalidad;
+
+    /** Cantidad total de localidades registradas */
     private int cantidadLocalidades;
- 
+                   
     public GrafoBuses() {
         primeraLocalidad = null;
         cantidadLocalidades = 0;
     }
- 
-   //agrega vertices
+
+    /**
+     * Agrega una nueva localidad al grafo.
+     * <p>
+     * La localidad se agrega como un nuevo vértice si no existe 
+     * y si el nombre es válido.
+     * </p>
+     * 
+     * @param nombre Nombre de la localidad
+     */
     public void agregarLocalidad(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
             return;
@@ -31,7 +44,12 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         cantidadLocalidades++;
     }
  
-    //Busca vertices por nombre
+    /**
+     * Busca una localidad por su nombre.
+     * 
+     * @param nombre Nombre de la localidad
+     * @return Nodo de la localidad o {@code null} si no existe
+     */
     private NodoVertices buscarNodoLocalidad(String nombre) {
         NodoVertices actual = primeraLocalidad;
         while (actual != null) {
@@ -43,12 +61,29 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         return null;
     }
  
-    //revisa si existen los vertices
+    /**
+     * Verifica si una localidad existe en el grafo.
+     * 
+     * @param nombre Nombre de la localidad
+     * @return {@code true} si existe, {@code false} en caso contrario
+     */
     public boolean existeLocalidad(String nombre) {
         return buscarNodoLocalidad(nombre) != null;
     }
  
-   //crea aristas 
+   }
+
+    /**
+     * Agrega una ruta entre dos localidades.
+     * <p>
+     * Crea una arista dirigida desde el origen al destino con un peso
+     * que representa el costo o distancia.
+     * </p>
+     * 
+     * @param origen Localidad de origen
+     * @param destino Localidad de destino
+     * @param peso Costo o distancia de la ruta
+     */
     public void agregarRuta(String origen, String destino, double peso) {
         if (origen == null || destino == null || peso <= 0) {
             return;
@@ -59,7 +94,6 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
             return;
         }
  
-        //verificar que no exista ya esa arista
         NodoArista arista = nodoOrigen.getPrimeraArista();
         while (arista != null) {
             if (arista.getDestino().equalsIgnoreCase(destino)) {
@@ -79,8 +113,15 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
             actual.setSiguiente(nuevaArista);
         }
     }
- 
-    //print bonito xd
+
+    /**
+     * Genera un print.
+     * <p>
+     * Muestra cada localidad y sus rutas salientes.
+     * </p>
+     * 
+     * @return Texto con la estructura del grafo
+     */
     public String imprimirGrafo() {
         if (primeraLocalidad == null) {
             return "El grafo no tiene localidades registradas.";
@@ -109,7 +150,17 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         return resultado;
     }
  
-    //intenta buscar la ruta mas corta 
+    /**
+     * Calcula la ruta más corta entre dos localidades.
+     * <p>
+     * Utiliza un algoritmo para encontrar el camino
+     * de menor costo entre el origen y el destino.
+     * </p>
+     * 
+     * @param origenNombre Localidad de origen
+     * @param destinoNombre Localidad de destino
+     * @return Texto con la ruta más corta y su costo total
+     */ 
     public String rutaMasCorta(String origenNombre, String destinoNombre) {
         if (cantidadLocalidades == 0) {
             return "El grafo no tiene localidades.";
@@ -215,7 +266,19 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         return "Ruta mas corta de '" + origenNombre + "' a '" + destinoNombre + "':\n"
                 + ruta + "\nCosto total: " + distancia[indiceDestino];
     }
- 
+
+    /**
+    * Busca la posición de una localidad dentro de un arreglo.
+    * <p>
+    * Recorre el arreglo de nombres hasta encontrar uno que coincida
+    * con el nombre dado.
+    * </p>
+    * 
+    * @param nombres Arreglo con los nombres de las localidades
+    * @param n Tamaño del arreglo
+    * @param nombre Nombre a buscar
+    * @return Posición encontrada o -1 si no existe
+    */
     private int buscarIndice(String[] nombres, int n, String nombre) {
         int i = 0;
         while (i < n) {
@@ -226,7 +289,13 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         }
         return -1;
     }
-    //conexion de grafo al json
+    
+    /**
+     * Convierte el grafo a formato JSON.
+     * Genera una representación en texto que puede ser almacenada o transmitida.
+     * 
+     * @return Cadena en formato JSON
+     */
     public String aJson() {
         String json = "{\n";
         json += "  \"localidades\": [\n";
@@ -264,7 +333,14 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         return json;
     }
  
-    //jsoon a grafo
+    /**
+     * Reconstruye el grafo a partir de un JSON.
+     * <p>
+     * Permite cargar las localidades y rutas previamente guardadas.
+     * </p>
+     * 
+     * @param json Cadena en formato JSON
+     */
     public void desdeJson(String json) {
         if (json == null || json.trim().isEmpty()) {
             return;
@@ -315,7 +391,17 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         }
     }
  
-    //cierra
+     /**
+     * Busca dónde termina una lista dentro del JSON.
+     * <p>
+     * Empieza desde una posición y avanza hasta encontrar el cierre correcto
+     * de los [].
+     * </p>
+     * 
+     * @param json Texto completo
+     * @param inicio Posición donde empieza la lista
+     * @return Posición donde termina la lista o -1 si no se encuentra
+     */
     private int encontrarCierreLista(String json, int inicio) {
         int profundidad = 0;
         int i = inicio;
@@ -331,7 +417,18 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         return -1;
     }
  
-    //Extrae un valor 
+    /**
+     * Extrae un número del JSON.
+     * <p>
+     * Busca una clave y obtiene el número que tiene asociado.
+     * Ignora espacios y otros caracteres para poder leerlo correctamente.
+     * </p>
+     * 
+     * @param json Texto o parte del JSON
+     * @param key Nombre del dato que se quiere obtener
+     * @param desde Posición desde donde empezar a buscar
+     * @return Número encontrado o -1 si ocurre algún error
+     */
     private double extraerDouble(String json, String key, int desde) {
         try {
             String fragmento = json.substring(desde);
@@ -363,7 +460,6 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
         }
     }
  
-    //getters funcionales
     public int getCantidadLocalidades() {
         return cantidadLocalidades;
     }
@@ -371,8 +467,12 @@ public class GrafoBuses {private NodoVertices primeraLocalidad;
     public boolean estaVacio() {
         return primeraLocalidad == null;
     }
- 
-    //return
+
+    /**
+     * Lista todas las localidades registradas.
+     * 
+     * @return Texto con las localidades
+     */
     public String listarLocalidades() {
         if (primeraLocalidad == null) {
             return "(ninguna)";
